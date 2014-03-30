@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/plot_name"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:text="@string/plot_name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ImageButton
+        android:id="@+id/pt_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_action_send"
+        android:contentDescription="@string/upload"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/coordinates"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/pt_location"
+        android:layout_alignParentLeft="true"
+        android:paddingTop="10dp"
+        android:text="@string/coordinates"
+        android:textAppearance="?android:attr/textAppearance" />
+
+    <ImageButton
+        android:id="@+id/pt_info"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_action_paste"
+        android:contentDescription="@string/plot_info"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/pt_upload"
+        android:text="@string/plot_info" />
+
+    <ImageButton
+        android:id="@+id/pt_camera"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_action_photo"
+        android:contentDescription="@string/camera"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/pt_info"
+        android:text="@string/camera" />
+
+    <ImageButton
+        android:id="@+id/pt_location"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_action_locate"
+        android:contentDescription="@string/location"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/pt_camera"
+        android:text="@string/location" />
+
+</RelativeLayout>

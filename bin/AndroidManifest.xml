@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="edu.mtu.citizenscience.TreePlotter"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="10"
+        android:targetSdkVersion="17" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.Resource"
+            android:label="@string/title_activity_resource" >
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.Help"
+            android:label="@string/title_activity_help" >
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.PlotTableActivity"
+            android:label="@string/title_activity_plottable" >
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.PlotInfoActivity"
+            android:label="@string/title_activity_plot_info" >
+        </activity>
+    </application>
+
+</manifest>
