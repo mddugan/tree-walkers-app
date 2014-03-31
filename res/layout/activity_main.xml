@@ -9,21 +9,43 @@
     tools:context=".MainActivity" >
 
     <TextView
-        android:id="@+id/text_view"
+        android:id="@+id/text_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="63dp"
-        android:text="TextView" />
+        android:layout_marginTop="27dp"
+        android:text="@string/treePlotApp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/text_intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/text_welcome"
+        android:layout_alignRight="@+id/text_welcome"
+        android:layout_below="@+id/text_welcome"
+        android:layout_marginTop="18dp"
+        android:text="@string/intro"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/plots_table_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/plots_table" 
-        android:onClick="onClick"/>
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="14dp"
+        android:onClick="onClick"
+        android:text="@string/plots_table" />
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_above="@+id/plots_table_button"
+        android:layout_alignLeft="@+id/plots_table_button"
+        android:onClick="onClick"
+        android:text="@string/login" />
 
 </RelativeLayout>

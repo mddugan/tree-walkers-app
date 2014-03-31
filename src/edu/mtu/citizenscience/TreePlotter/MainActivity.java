@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
@@ -26,7 +25,6 @@ public class MainActivity extends Activity {
 	
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
-		TextView view = (TextView) findViewById(R.id.text_view);
 		switch (item.getItemId()) {
 			case 0:
 				Intent i = new Intent(this, Help.class);
@@ -37,7 +35,6 @@ public class MainActivity extends Activity {
 				startActivity(d);
 				break;
 			default:
-				view.setText("Debug.");
 				break;
 			}
 		return false;
@@ -52,14 +49,14 @@ public class MainActivity extends Activity {
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.plots_table_button:
-
 			Intent start_pt = new Intent(this, PlotTableActivity.class);
 			startActivity(start_pt);
-			
+			break;
+		case R.id.login_button:
+			Intent start_l = new Intent(this, LoginActivity.class);
+			startActivity(start_l);
 			break;
 		}
-
-
 	}//endof onClick
 }
 

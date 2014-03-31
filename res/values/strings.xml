@@ -25,6 +25,16 @@
     <string name="abundance">Abundance</string>
     <string name="tree">Tree Name :</string>
     <string name="abd_lvl">Abundance Level :</string>
+    <string name="intro">Please enter your logging information if you have not used this app before by clicking the Login, otherwise continue to the Plot Table</string>
+    <string name="login">Login</string>
+    <string name="treePlotApp">Tree Plotter App</string>
+    <string name="userid">User ID:</string>
+    <string name="email">Email:</string>
+    <string name="exp">Experience Level:</string>
+    <string name="beg">Beginner</string>
+    <string name="inter">Intermediate</string>
+    <string name="adv">Advanced</string>
+    <string name="returner">Save and Return</string>
     
     <string-array name="abundance_level">
         <item>Rare</item>

@@ -38,6 +38,11 @@
             android:name="edu.mtu.citizenscience.TreePlotter.PlotInfoActivity"
             android:label="@string/title_activity_plot_info" >
         </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
     </application>
 
 </manifest>

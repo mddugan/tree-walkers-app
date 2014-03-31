@@ -53,7 +53,6 @@ public class PlotTableActivity extends Activity {
 
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
-		TextView view = (TextView) findViewById(R.id.text_view);
 		switch (item.getItemId()) {
 		case 0:
 			Intent i = new Intent(this, Help.class);
@@ -64,7 +63,6 @@ public class PlotTableActivity extends Activity {
 			startActivity(d);
 			break;
 		default:
-			view.setText("Debug.");
 			break;
 		}
 		return false;

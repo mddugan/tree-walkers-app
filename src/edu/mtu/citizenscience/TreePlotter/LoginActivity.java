@@ -1,22 +1,27 @@
 package edu.mtu.citizenscience.TreePlotter;
 
-import android.support.v4.app.Fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
 
-public class Help extends Activity {
-
+public class LoginActivity extends Activity {
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_help);
+		setContentView(R.layout.activity_login);
+		final Button btnBack = (Button) findViewById(R.id.btnBack);
+		btnBack.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		        Intent i= new Intent(LoginActivity.this, MainActivity.class);
+		        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		        LoginActivity.this.startActivity(i);
+		    }
+		});
 	}
 
 	@Override
@@ -31,33 +36,20 @@ public class Help extends Activity {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 			case 0:
-				//Do nothing
+				Intent i = new Intent(this, Help.class);
+				startActivity(i);
 				break;
 			case 1:
-				Intent i = new Intent(this, Resource.class);
-				startActivity(i);
+				Intent d = new Intent(this, Resource.class);
+				startActivity(d);
 				break;
 			default:
 				break;
 			}
 		return false;
-		}
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_help, container,
-					false);
-			return rootView;
-		}
 	}
-
+	
+	
 }
+
+
