@@ -304,7 +304,6 @@ public class PlotInfoActivity extends Activity {
 				public void onClick(View v) {
 					switch(v.getId()){
 					case R.id.pi_camera:
-					//	Toast.makeText(getApplicationContext(), "camera", Toast.LENGTH_SHORT).show();
 						small_curr_position = position;
 						startCamera();
 						break;
@@ -359,7 +358,6 @@ private class LargeTreesDisplayAdapter extends ArrayAdapter<LargeTree>{
 				public void onClick(View v) {
 					switch(v.getId()){
 					case R.id.pi_camera:
-					//	Toast.makeText(getApplicationContext(), "camera", Toast.LENGTH_SHORT).show();
 						large_curr_position = position;
 						startCamera();
 						break;

@@ -195,7 +195,6 @@ public class PlotTableActivity extends Activity {
 				public void onClick(View v) {
 					switch(v.getId()){
 					case R.id.pt_location:
-						//Toast.makeText(getApplicationContext(), "location", Toast.LENGTH_SHORT).show();
 						current_position = position;
 						break;
 					}
@@ -212,7 +211,6 @@ public class PlotTableActivity extends Activity {
 				public void onClick(View v) {
 					switch(v.getId()){
 					case R.id.pt_camera:
-					//	Toast.makeText(getApplicationContext(), "camera", Toast.LENGTH_SHORT).show();
 						current_position = position;
 						startCamera();
 						break;
@@ -230,7 +228,6 @@ public class PlotTableActivity extends Activity {
 				public void onClick(View v) {
 					switch(v.getId()){
 					case R.id.pt_info:
-						//Toast.makeText(getApplicationContext(), "tree_info", Toast.LENGTH_SHORT).show();
 						current_position = position;
 						startTreeInfo();
 						break;
@@ -248,7 +245,6 @@ public class PlotTableActivity extends Activity {
 				public void onClick(View v) {
 					switch(v.getId()){
 					case R.id.pt_upload:
-						//Toast.makeText(getApplicationContext(), "upload", Toast.LENGTH_SHORT).show();
 						current_position = position;
 						break;
 					}
@@ -274,7 +270,6 @@ public class PlotTableActivity extends Activity {
 		if (requestCode == CAMERA_INTENT_CODE){
 			if (resultCode == RESULT_OK) {
 				// Image captured
-				Toast.makeText(getApplicationContext(), "current position = "+current_position, Toast.LENGTH_SHORT).show();
 				Bitmap img = (Bitmap) data.getExtras().get("data");
 				
 				myPlots.get(current_position).setImg(img);
