@@ -29,10 +29,19 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
-        android:id="@+id/np_plot_coor"
+        android:id="@+id/np_plot_lat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10" 
-        android:hint="Enter coordinates"/>
+        android:inputType="number"
+        android:hint="Enter Latitude"/>
+
+    <EditText
+        android:id="@+id/np_plot_long"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:hint="Enter Longitude" />
 
 </LinearLayout>

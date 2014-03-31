@@ -35,7 +35,9 @@
     <string name="inter">Intermediate</string>
     <string name="adv">Advanced</string>
     <string name="returner">Save and Return</string>
-    
+    <string name="lat">latitude</string>
+    <string name="longi">longitude</string>
+
     <string-array name="abundance_level">
         <item>Rare</item>
         <item>Uncommon</item>

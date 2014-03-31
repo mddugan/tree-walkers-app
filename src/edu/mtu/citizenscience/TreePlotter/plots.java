@@ -5,13 +5,15 @@ import android.graphics.Bitmap;
 public class plots {
 
 	private String name;
-	private String coordinates;
+	private String latitude;
+	private String longitude;
 	private Bitmap img;
 	
-	public plots(String name, String coordinates, Bitmap img) {
+	public plots(String name, String latitude, String longitude, Bitmap img) {
 		super();
 		this.name = name;
-		this.coordinates = coordinates;
+		this.latitude = latitude;
+		this.longitude = longitude;
 		this.img = img;
 		
 	}
@@ -28,9 +30,13 @@ public class plots {
 		return name;
 	}
 
-	public String getCoordinates() {
-		return coordinates;
+	public String getLatitude() {
+		return latitude;
 	}
-	
+
+	public String getLongitude() {
+		return longitude;
+	}
+
 
 }

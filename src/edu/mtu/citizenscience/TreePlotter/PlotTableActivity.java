@@ -3,6 +3,8 @@ package edu.mtu.citizenscience.TreePlotter;
 import java.util.ArrayList;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBar;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -28,19 +30,25 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+@SuppressLint("NewApi")
 public class PlotTableActivity extends Activity {
 
 	ArrayList<plots> myPlots = new ArrayList<plots>();
 	private AlertDialog.Builder builder;
 	private AlertDialog ad;
-	private  String plot_name = "plot name" , plot_coor = "coordinates";
+	private  String plot_name = "plot name" , plot_lat = "latitude", plot_long = "longitude";
 	private final int CAMERA_INTENT_CODE = 7;
 	private int current_position = -1;
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.plot_table);
+		android.app.ActionBar actionBar = getActionBar();
+		actionBar.setTitle("Plot Table");
+		actionBar.show();
+		
 	}
 
 	@Override
@@ -53,6 +61,7 @@ public class PlotTableActivity extends Activity {
 
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
+		//TextView view = (TextView) findViewById(R.id.text_view);
 		switch (item.getItemId()) {
 		case 0:
 			Intent i = new Intent(this, Help.class);
@@ -63,6 +72,7 @@ public class PlotTableActivity extends Activity {
 			startActivity(d);
 			break;
 		default:
+			//view.setText("Debug.");
 			break;
 		}
 		return false;
@@ -91,9 +101,14 @@ public class PlotTableActivity extends Activity {
 		final View layout = inflater.inflate(R.layout.new_plot_dialog, null);
 
 		final EditText input_plot_name = (EditText)layout.findViewById(R.id.np_plot_name);
-		final EditText input_plot_coor = (EditText)layout.findViewById(R.id.np_plot_coor);
+		final EditText input_plot_lat = (EditText)layout.findViewById(R.id.np_plot_lat);
+		final EditText input_plot_long = (EditText) layout.findViewById(R.id.np_plot_long);
+		
+		
+		
 		plot_name = "plot name";
-		plot_coor = "coordinates";
+		plot_lat = "latitude";
+		plot_long = "longitude";
 
 		builder.setTitle("New Plot");
 		builder.setMessage("Enter the plot name and coorinates");
@@ -104,9 +119,10 @@ public class PlotTableActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
 				plot_name =  input_plot_name.getText().toString();
-				plot_coor = input_plot_coor.getText().toString();
+				plot_lat = input_plot_lat.getText().toString();
+				plot_long = input_plot_long.getText().toString();
 
-				plotToList(plot_name, plot_coor);
+				plotToList(plot_name, plot_lat, plot_long);
 				plotsToDisplay();
 			}
 
@@ -119,15 +135,16 @@ public class PlotTableActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
 				plot_name = "plot name";
-				plot_coor = "coordinates";
+				plot_lat = "latitude";
+				plot_long = "longitude";
 			}
 		});
 		ad = builder.create();
 		return ad;
 	}
 
-	private void plotToList(String name, String coordinates) {
-		myPlots.add(new plots(name, coordinates, null));
+	private void plotToList(String name, String latitude, String longitude) {
+		myPlots.add(new plots(name, latitude, longitude, null));
 	}
 
 	private void plotsToDisplay(){
@@ -162,9 +179,13 @@ public class PlotTableActivity extends Activity {
 			TextView plot_name = (TextView) plotView.findViewById(R.id.plot_name);
 			plot_name.setText(currentPlot.getName());
 
-			//plot coordinates
-			TextView plot_coor = (TextView) plotView.findViewById(R.id.coordinates);
-			plot_coor.setText(currentPlot.getCoordinates());
+			//plot latitude
+			TextView plot_lat = (TextView) plotView.findViewById(R.id.latitude);
+			plot_lat.setText(currentPlot.getLatitude());
+			
+			//plot longitude
+			TextView plot_long = (TextView) plotView.findViewById(R.id.longitude);
+			plot_long.setText(currentPlot.getLongitude());
 
 			//Configuration for the location/gps button on the List view
 			final ImageButton location_button = (ImageButton) plotView.findViewById(R.id.pt_location);
