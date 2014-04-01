@@ -1,7 +1,13 @@
 package edu.mtu.citizenscience.TreePlotter;
 
 import java.util.ArrayList;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.annotation.SuppressLint;
@@ -13,6 +19,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +46,12 @@ public class PlotTableActivity extends Activity {
 	private  String plot_name = "plot name" , plot_lat = "latitude", plot_long = "longitude";
 	private final int CAMERA_INTENT_CODE = 7;
 	private int current_position = -1;
+	private EditText input_plot_lat;
+	private EditText input_plot_long;
+	private LocationManager lManager;
+	private LocationListener gListener;
+	private Location bestLocation;
+	private AsyncTask<Void,Void,Void> currentGPSTasker;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -48,7 +61,58 @@ public class PlotTableActivity extends Activity {
 		android.app.ActionBar actionBar = getActionBar();
 		actionBar.setTitle("Plot Table");
 		actionBar.show();
-		
+
+		//set up LocationManager and Listener for GPS
+		currentGPSTasker = null;
+		//sets up a location Manager
+		lManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		bestLocation = lManager.getLastKnownLocation(lManager.GPS_PROVIDER);
+
+
+		//set up Location listener
+		gListener = new LocationListener() {
+
+			@Override
+			public void onLocationChanged(Location location) {
+				Log.d("GPS", "location has changed");
+				if (bestLocation == null) {
+					Log.d("GPS", "setting location for the first time");
+					bestLocation = location;
+				}
+				else { //compare them
+					//check that it is newer than bestLocation
+					if (location.getTime() - bestLocation.getTime() > 0 ) {
+						Log.d("GPS", "new location is new than previous location");
+						//check that it is more accurate
+						if (location.getAccuracy() < bestLocation.getAccuracy()) {
+							Log.d("GPS", "new location is more accurate, setting");
+							bestLocation = location;
+
+						}
+					}
+
+				}
+			}
+
+			@Override
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
+
+			}
+
+			@Override
+			public void onProviderEnabled(String provider) {
+				Log.d("GPS", provider + "has been enabled");
+			}
+
+			@Override
+			public void onProviderDisabled(String provider) {
+				Log.d("GPS", provider + "has been disabled");
+			}
+
+		};
+
+
 	}
 
 	@Override
@@ -86,11 +150,14 @@ public class PlotTableActivity extends Activity {
 		case R.id.new_plot:
 
 			newPlotDialog().show();
+			
+
 			break;
 
 
 		}
 	}
+
 
 	private Dialog newPlotDialog(){
 
@@ -101,11 +168,11 @@ public class PlotTableActivity extends Activity {
 		final View layout = inflater.inflate(R.layout.new_plot_dialog, null);
 
 		final EditText input_plot_name = (EditText)layout.findViewById(R.id.np_plot_name);
-		final EditText input_plot_lat = (EditText)layout.findViewById(R.id.np_plot_lat);
-		final EditText input_plot_long = (EditText) layout.findViewById(R.id.np_plot_long);
-		
-		
-		
+		input_plot_lat = (EditText)layout.findViewById(R.id.np_plot_lat);
+		input_plot_long = (EditText) layout.findViewById(R.id.np_plot_long);
+
+
+
 		plot_name = "plot name";
 		plot_lat = "latitude";
 		plot_long = "longitude";
@@ -141,6 +208,125 @@ public class PlotTableActivity extends Activity {
 		});
 		ad = builder.create();
 		return ad;
+	}
+
+	private class GPSUpdaterTask extends AsyncTask<Void, Void, Void> {
+		private final float MAX_INACCURACY = 100; //in meters
+		private final long MAX_ELAPSED_TIME = 1000 * 60 * 2;
+		String provider;
+		Location updated;
+		long startTime;
+		@Override
+		protected void onPreExecute() {
+			provider = lManager.GPS_PROVIDER;
+			//start grabbing gps coordinates
+			lManager.requestLocationUpdates(provider, 0, 0, gListener);
+
+			Log.d("GPS", "started listening for updates");
+
+			//grab latest location
+			updated = lManager.getLastKnownLocation(provider);
+			if (updated == null) {
+				Log.d("GPS", "updated is null");
+			}
+			if (bestLocation == null) {
+				Log.d("GPS", "bestLocation is null");
+			}
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			startTime = System.currentTimeMillis();
+			long currentTime = -1;
+			//wait for more recent location update
+			while(updated.getTime() <= bestLocation.getTime()) {
+				currentTime = System.currentTimeMillis();
+				if (currentTime - startTime > MAX_ELAPSED_TIME) {
+					Log.d("GPS", "GPS timeout");
+					return null;
+				}
+				updated = lManager.getLastKnownLocation(provider);
+			}
+
+			//now wait for an accurate one
+			while(updated.getAccuracy() > MAX_INACCURACY) {
+				currentTime = System.currentTimeMillis();
+				if (currentTime - startTime > MAX_ELAPSED_TIME) {
+					Log.d("GPS", "GPS timeout");
+					return null;
+				}
+				updated = lManager.getLastKnownLocation(provider);
+			}
+
+			Log.d("GPS", "location is accurate enough");
+
+			//set new bestLocation
+			bestLocation = updated;
+
+			//stop listening
+			lManager.removeUpdates(gListener);
+
+			Log.d("GPS", "turned off location updates");
+
+			return null;
+		}
+
+		protected void onPostExecute(Void v) {
+			if (bestLocation == null) {
+				Log.d("GPS", "bestLocation is null");
+				return;
+			}
+			
+			
+			if (input_plot_lat == null) {
+				Log.d("GPS", "latitude field is null");
+				return;
+			}
+			input_plot_lat.setText(Double.toString(bestLocation.getLatitude()));
+			
+			if (input_plot_long == null) {
+				Log.d("GPS", "longitude field is null");
+				return;
+			}
+			input_plot_long.setText(Double.toString(bestLocation.getLongitude()));
+
+		}
+
+	}
+
+	public void getGPS(View v) {
+
+		//TODO  device has google services?
+
+		Log.d("GPS", "creating thread to get gps coordinates");
+		if (lManager.isProviderEnabled(lManager.GPS_PROVIDER)) {
+			Log.d("GPS", "GPS Provider enabled");
+		}
+		else {
+			//show alert telling user that GPS is disabled
+			Log.d("GPS", "GPS Provider disabled");
+			return;
+		}
+
+		if (lManager.isProviderEnabled(lManager.NETWORK_PROVIDER)) {
+			Log.d("GPS", "Network Provider enabled");
+		}
+		else {
+			Log.d("GPS", "network Provider disabled");
+		}
+
+		if (currentGPSTasker == null) {
+			currentGPSTasker = new GPSUpdaterTask().execute(new Void[1]);
+		}
+		else {
+			if (currentGPSTasker.getStatus() == AsyncTask.Status.FINISHED){
+				currentGPSTasker = new GPSUpdaterTask().execute(new Void[1]);
+			}
+			else {
+				Log.d("GPS", "GPS Thread already running");
+			}
+		}
+
 	}
 
 	private void plotToList(String name, String latitude, String longitude) {
@@ -182,7 +368,7 @@ public class PlotTableActivity extends Activity {
 			//plot latitude
 			TextView plot_lat = (TextView) plotView.findViewById(R.id.latitude);
 			plot_lat.setText(currentPlot.getLatitude());
-			
+
 			//plot longitude
 			TextView plot_long = (TextView) plotView.findViewById(R.id.longitude);
 			plot_long.setText(currentPlot.getLongitude());
@@ -266,14 +452,14 @@ public class PlotTableActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		
+
 		if (requestCode == CAMERA_INTENT_CODE){
 			if (resultCode == RESULT_OK) {
 				// Image captured
 				Bitmap img = (Bitmap) data.getExtras().get("data");
-				
+
 				myPlots.get(current_position).setImg(img);
-				
+
 			} else if (resultCode == RESULT_CANCELED) {
 				// User cancelled the image capture
 			} else {
@@ -281,12 +467,12 @@ public class PlotTableActivity extends Activity {
 			}
 		}
 	}//endof onActivityResult
-	
+
 	public void startTreeInfo(){
 		Intent TreeInfoIntent = new Intent(this, PlotInfoActivity.class);
 		TreeInfoIntent.putExtra("plot_name", myPlots.get(current_position).getName());
 		startActivity(TreeInfoIntent);
-		
+
 	}
-	
+
 }

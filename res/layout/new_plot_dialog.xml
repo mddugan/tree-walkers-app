@@ -43,5 +43,10 @@
         android:ems="10"
         android:inputType="number"
         android:hint="Enter Longitude" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/get_gps_coords"
+        android:onClick="getGPS"/>
 
 </LinearLayout>

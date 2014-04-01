@@ -37,6 +37,7 @@
     <string name="returner">Save and Return</string>
     <string name="lat">latitude</string>
     <string name="longi">longitude</string>
+    <string name="get_gps_coords">Get GPS Coordinates</string>
 
     <string-array name="abundance_level">
         <item>Rare</item>
