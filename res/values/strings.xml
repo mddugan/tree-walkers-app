@@ -38,6 +38,8 @@
     <string name="lat">latitude</string>
     <string name="longi">longitude</string>
     <string name="get_gps_coords">Get GPS Coordinates</string>
+    <string name="action_help">Context Help</string>
+    <string name="help">Help</string>
 
     <string-array name="abundance_level">
         <item>Rare</item>

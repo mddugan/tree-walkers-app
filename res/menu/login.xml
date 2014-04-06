@@ -1,10 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="${packageName}.${activityClass}" >
-
-    <item
-        android:id="@+id/action_forgot_password"
-        android:showAsAction="never"
-        android:title="@string/action_forgot_password"/>
+    
+    <item android:id="@+id/action_help"
+        android:icon="@drawable/ic_action_help"
+        android:title="@string/action_help"
+        android:showAsAction="ifRoom" />
+    
+    
+ 
+    <item android:id="@+id/action_resources"
+        android:title="@string/title_activity_resources"
+        android:showAsAction="never" />
+    
+        <item android:id="@+id/help"
+        android:title="@string/help"
+        android:showAsAction="never" />
+    
 
 </menu>
