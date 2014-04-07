@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -17,23 +19,25 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu.add(0,0,0,"Help");
-		menu.add(0,1,0,"Resources");
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.login, menu);
 		return true;
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-			case 0:
+			case R.id.help:
 				Intent i = new Intent(this, Help.class);
 				startActivity(i);
 				break;
-			case 1:
+			case R.id.action_resources:
 				Intent d = new Intent(this, Resource.class);
 				startActivity(d);
 				break;
+			case R.id.action_help:
+				Toast.makeText(this,"Test context menu selected",Toast.LENGTH_SHORT).show();
+		        break;
 			default:
 				break;
 			}

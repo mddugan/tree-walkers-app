@@ -3,7 +3,6 @@ package edu.mtu.citizenscience.TreePlotter;
 import java.util.ArrayList;
 
 import edu.mtu.citizenscience.TreePlotter.PlotTableActivity.plotDisplayAdapter;
-
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.app.Activity;
@@ -15,6 +14,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,27 +82,28 @@ public class PlotInfoActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.plot_info, menu);
-		menu.add(0,0,0,"Help");
-		menu.add(0,1,0,"Resources");
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.login, menu);
 		return true;
 	}
-
+	
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-		case 0:
-			Intent i = new Intent(this, Help.class);
-			startActivity(i);
-			break;
-		case 1:
-			Intent d = new Intent(this, Resource.class);
-			startActivity(d);
-			break;
-		default:
-			break;
-		}
+			case R.id.help:
+				Intent i = new Intent(this, Help.class);
+				startActivity(i);
+				break;
+			case R.id.action_resources:
+				Intent d = new Intent(this, Resource.class);
+				startActivity(d);
+				break;
+			case R.id.action_help:
+				Toast.makeText(this,"Test context menu selected",Toast.LENGTH_SHORT).show();
+		        break;
+			default:
+				break;
+			}
 		return false;
 	}
 

@@ -1,6 +1,7 @@
 package edu.mtu.citizenscience.TreePlotter;
 
 import java.util.ArrayList;
+
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,6 +23,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -117,28 +119,28 @@ public class PlotTableActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu.add(0,0,0,"Help");
-		menu.add(0,1,0,"Resources");
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.login, menu);
 		return true;
 	}
-
+	
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
-		//TextView view = (TextView) findViewById(R.id.text_view);
 		switch (item.getItemId()) {
-		case 0:
-			Intent i = new Intent(this, Help.class);
-			startActivity(i);
-			break;
-		case 1:
-			Intent d = new Intent(this, Resource.class);
-			startActivity(d);
-			break;
-		default:
-			//view.setText("Debug.");
-			break;
-		}
+			case R.id.help:
+				Intent i = new Intent(this, Help.class);
+				startActivity(i);
+				break;
+			case R.id.action_resources:
+				Intent d = new Intent(this, Resource.class);
+				startActivity(d);
+				break;
+			case R.id.action_help:
+				Toast.makeText(this,"Test context menu selected",Toast.LENGTH_SHORT).show();
+		        break;
+			default:
+				break;
+			}
 		return false;
 	}
 

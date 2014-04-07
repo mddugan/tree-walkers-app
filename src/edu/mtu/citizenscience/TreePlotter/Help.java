@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Help extends Activity {
 
@@ -21,28 +23,28 @@ public class Help extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu.add(0,0,0,"Help");
-		menu.add(0,1,0,"Resources");
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.login, menu);
 		return true;
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-			case 0:
-				//Do nothing
+			case R.id.help:
 				break;
-			case 1:
-				Intent i = new Intent(this, Resource.class);
-				startActivity(i);
+			case R.id.action_resources:
+				Intent d = new Intent(this, Resource.class);
+				startActivity(d);
 				break;
+			case R.id.action_help:
+				Toast.makeText(this,"Test context menu selected",Toast.LENGTH_SHORT).show();
+		        break;
 			default:
 				break;
 			}
 		return false;
-		}
-
+	}
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */

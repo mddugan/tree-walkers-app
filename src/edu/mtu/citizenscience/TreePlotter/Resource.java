@@ -7,11 +7,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Resource extends Activity {
 
@@ -31,27 +33,28 @@ public class Resource extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu.add(0,0,0,"Help");
-		menu.add(0,1,0,"Resources");
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.login, menu);
 		return true;
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-			case 0:
+			case R.id.help:
 				Intent i = new Intent(this, Help.class);
 				startActivity(i);
 				break;
-			case 1:
-				//Do nothing
+			case R.id.action_resources:
 				break;
+			case R.id.action_help:
+				Toast.makeText(this,"Test context menu selected",Toast.LENGTH_SHORT).show();
+		        break;
 			default:
 				break;
 			}
 		return false;
-		}
+	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
