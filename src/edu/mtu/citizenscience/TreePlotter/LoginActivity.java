@@ -36,17 +36,14 @@ public class LoginActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-			case R.id.help:
-				Intent i = new Intent(this, Help.class);
-				startActivity(i);
-				break;
 			case R.id.action_resources:
 				Intent d = new Intent(this, Resource.class);
 				startActivity(d);
 				break;
 			case R.id.action_help:
-				Toast.makeText(this,"Test context menu selected",Toast.LENGTH_SHORT).show();
-		        break;
+				Intent i = new Intent(this, Help.class);
+				startActivity(i);
+				break;
 			default:
 				break;
 			}

@@ -13,9 +13,5 @@
         android:title="@string/title_activity_resources"
         android:showAsAction="never" />
     
-        <item android:id="@+id/help"
-        android:title="@string/help"
-        android:showAsAction="never" />
-    
 
 </menu>

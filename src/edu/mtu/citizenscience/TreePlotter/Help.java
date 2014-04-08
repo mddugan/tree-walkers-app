@@ -21,30 +21,6 @@ public class Help extends Activity {
 		setContentView(R.layout.activity_help);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.login, menu);
-		return true;
-	}
-	
-	public boolean onOptionsItemSelected(MenuItem item){
-		super.onOptionsItemSelected(item);
-		switch (item.getItemId()) {
-			case R.id.help:
-				break;
-			case R.id.action_resources:
-				Intent d = new Intent(this, Resource.class);
-				startActivity(d);
-				break;
-			case R.id.action_help:
-				Toast.makeText(this,"Test context menu selected",Toast.LENGTH_SHORT).show();
-		        break;
-			default:
-				break;
-			}
-		return false;
-	}
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -61,5 +37,7 @@ public class Help extends Activity {
 			return rootView;
 		}
 	}
+	
+	
 
 }
