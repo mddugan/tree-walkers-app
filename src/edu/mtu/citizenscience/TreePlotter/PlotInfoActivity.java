@@ -33,8 +33,8 @@ import android.widget.Toast;
 
 public class PlotInfoActivity extends Activity {
 
-	private ArrayList<LargeTree> myLargeTrees = new ArrayList<LargeTree>();
-	private ArrayList<SmallTree> mySmallTrees = new ArrayList<SmallTree>();
+	private ArrayList<Tree> myLargeTrees = new ArrayList<Tree>();
+	private ArrayList<Tree> mySmallTrees = new ArrayList<Tree>();
 	private AlertDialog.Builder builder;
 	private AlertDialog ad;
 	private String small_tree_name = " ";
@@ -43,11 +43,19 @@ public class PlotInfoActivity extends Activity {
 	private final int CAMERA_INTENT_CODE = 7;
 	private int small_curr_position = -1;
 	private int large_curr_position = -1;
+	private Bundle extra;
+	private String curr_plot_name;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.plot_info_activity);
+
+		extra = getIntent().getExtras();
+		
+		if(extra.getString("plot_name") != null){
+			curr_plot_name  = extra.getString("plot_name");
+		}
 
 		Button add_small_tree = (Button)findViewById(R.id.pi_add_small);
 		add_small_tree.setOnClickListener(new OnClickListener(){
@@ -82,26 +90,26 @@ public class PlotInfoActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.login, menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.login, menu);
 		return true;
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-			
-			case R.id.action_resources:
-				Intent d = new Intent(this, Resource.class);
-				startActivity(d);
-				break;
-			case R.id.action_help:
-				Intent i = new Intent(this, Help.class);
-				startActivity(i);
-				break;
-			default:
-				break;
-			}
+
+		case R.id.action_resources:
+			Intent d = new Intent(this, Resource.class);
+			startActivity(d);
+			break;
+		case R.id.action_help:
+			Intent i = new Intent(this, Help.class);
+			startActivity(i);
+			break;
+		default:
+			break;
+		}
 		return false;
 	}
 
@@ -155,7 +163,7 @@ public class PlotInfoActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 
 				small_tree_name = input_tree_name.getText().toString();
-				mySmallTrees.add(new SmallTree(small_tree_name, abundance_lvl, null));
+				mySmallTrees.add(new Tree(curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
 				SmallTreesDisplay();
 
 
@@ -225,7 +233,7 @@ public class PlotInfoActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 
 				large_tree_name = input_tree_name.getText().toString();
-				myLargeTrees.add(new LargeTree(large_tree_name, abundance_lvl, null));
+				myLargeTrees.add(new Tree(curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
 				LargeTreesDisplay();
 
 
@@ -251,23 +259,23 @@ public class PlotInfoActivity extends Activity {
 
 	private void SmallTreesDisplay(){
 
-		ArrayAdapter <SmallTree> displaySmallTreesAdapter = new SmallTreesDisplayAdapter();
+		ArrayAdapter <Tree> displaySmallTreesAdapter = new SmallTreesDisplayAdapter();
 		ListView list = (ListView) findViewById(R.id.pi_small_list);
 		list.setAdapter(displaySmallTreesAdapter);
 
 	}
 
 	private void LargeTreesDisplay(){
-		
-		ArrayAdapter <LargeTree> displayLargeTreesAdapter = new LargeTreesDisplayAdapter();
+
+		ArrayAdapter <Tree> displayLargeTreesAdapter = new LargeTreesDisplayAdapter();
 		ListView list = (ListView) findViewById(R.id.pi_large_list);
 		list.setAdapter(displayLargeTreesAdapter);
 
 	}
 
-	private class SmallTreesDisplayAdapter extends ArrayAdapter<SmallTree>{
+	private class SmallTreesDisplayAdapter extends ArrayAdapter<Tree>{
 
-		
+
 		public SmallTreesDisplayAdapter() {
 			super(PlotInfoActivity.this, R.layout.plot_info_element, mySmallTrees);
 		}
@@ -280,21 +288,21 @@ public class PlotInfoActivity extends Activity {
 			if(SmallTreeView == null){
 				SmallTreeView =  getLayoutInflater().inflate(R.layout.plot_info_element, parent, false);
 			}
-		
-			
+
+
 			//current tree
-			SmallTree curr_tree = mySmallTrees.get(position);
-			
+			Tree curr_tree = mySmallTrees.get(position);
+
 			//set the name
 			TextView name = (TextView) SmallTreeView.findViewById(R.id.pi_tree_name);
 			name.setText(curr_tree.getName());
-			
-			
-			
+
+
+
 			//set the abundance
 			TextView abd = (TextView) SmallTreeView.findViewById(R.id.pi_abundance);
 			abd.setText(curr_tree.getAbundance());
-			
+
 			//Configuration for the camera button on the List view
 			final ImageButton camera_button = (ImageButton) SmallTreeView.findViewById(R.id.pi_camera);
 			camera_button.setOnClickListener(new OnClickListener(){
@@ -311,17 +319,17 @@ public class PlotInfoActivity extends Activity {
 
 
 			});
-			
+
 			return SmallTreeView;
-			
+
 		}
 
 	}
-	
-	
-private class LargeTreesDisplayAdapter extends ArrayAdapter<LargeTree>{
 
-		
+
+	private class LargeTreesDisplayAdapter extends ArrayAdapter<Tree>{
+
+
 		public LargeTreesDisplayAdapter() {
 			super(PlotInfoActivity.this, R.layout.plot_info_element, myLargeTrees);
 		}
@@ -334,21 +342,21 @@ private class LargeTreesDisplayAdapter extends ArrayAdapter<LargeTree>{
 			if(LargeTreeView == null){
 				LargeTreeView =  getLayoutInflater().inflate(R.layout.plot_info_element, parent, false);
 			}
-		
-			
+
+
 			//current tree
-			LargeTree curr_tree = myLargeTrees.get(position);
-			
+			Tree curr_tree = myLargeTrees.get(position);
+
 			//set the name
 			TextView name = (TextView) LargeTreeView.findViewById(R.id.pi_tree_name);
 			name.setText(curr_tree.getName());
-			
-			
-			
+
+
+
 			//set the abundance
 			TextView abd = (TextView) LargeTreeView.findViewById(R.id.pi_abundance);
 			abd.setText(curr_tree.getAbundance());
-			
+
 			//Configuration for the camera button on the List view
 			final ImageButton camera_button = (ImageButton) LargeTreeView.findViewById(R.id.pi_camera);
 			camera_button.setOnClickListener(new OnClickListener(){
@@ -365,12 +373,12 @@ private class LargeTreesDisplayAdapter extends ArrayAdapter<LargeTree>{
 
 
 			});
-				
+
 			return LargeTreeView;
-			
+
 		}
 	}
-	
+
 	//For the Camera
 	public void startCamera() {
 		Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -380,12 +388,12 @@ private class LargeTreesDisplayAdapter extends ArrayAdapter<LargeTree>{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		
+
 		if (requestCode == CAMERA_INTENT_CODE){
 			if (resultCode == RESULT_OK) {
 				// Image captured
 				Bitmap img = (Bitmap) data.getExtras().get("data");
-				
+
 				if(small_curr_position > 0){
 					mySmallTrees.get(small_curr_position).setImg(img);
 					small_curr_position = -1;
@@ -394,7 +402,7 @@ private class LargeTreesDisplayAdapter extends ArrayAdapter<LargeTree>{
 					myLargeTrees.get(large_curr_position).setImg(img);
 					large_curr_position = -1;
 				}
-				
+
 			} else if (resultCode == RESULT_CANCELED) {
 				// User cancelled the image capture
 			} else {

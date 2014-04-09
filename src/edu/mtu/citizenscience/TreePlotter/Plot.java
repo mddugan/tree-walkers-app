@@ -1,16 +1,25 @@
 package edu.mtu.citizenscience.TreePlotter;
 
+import com.orm.SugarRecord;
+
+import android.content.Context;
 import android.graphics.Bitmap;
 
-public class plots {
+public class Plot extends SugarRecord<Plot>{
 
+	private String user;
 	private String name;
 	private String latitude;
 	private String longitude;
 	private Bitmap img;
 	
-	public plots(String name, String latitude, String longitude, Bitmap img) {
-		super();
+	public Plot(Context ctx){
+		super(ctx);
+	}
+	
+	public Plot(Context ctx, String user ,String name, String latitude, String longitude, Bitmap img) {
+		super(ctx);
+		this.user = user;
 		this.name = name;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -38,5 +47,8 @@ public class plots {
 		return longitude;
 	}
 
+	public String getUser() {
+		return user;
+	}
 
 }

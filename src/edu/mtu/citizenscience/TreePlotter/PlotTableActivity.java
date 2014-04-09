@@ -1,6 +1,7 @@
 package edu.mtu.citizenscience.TreePlotter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -39,10 +40,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-@SuppressLint("NewApi")
+
 public class PlotTableActivity extends Activity {
 
-	ArrayList<plots> myPlots = new ArrayList<plots>();
+	private ArrayList<Plot> myPlots = new ArrayList<Plot>();
 	private AlertDialog.Builder builder;
 	private AlertDialog ad;
 	private  String plot_name = "plot name" , plot_lat = "latitude", plot_long = "longitude";
@@ -55,14 +56,53 @@ public class PlotTableActivity extends Activity {
 	private Location bestLocation;
 	private AsyncTask<Void,Void,Void> currentGPSTasker;
 
+	private Bundle extra;
+	private String curr_user;
+	private List<User> user;
+
+	@SuppressWarnings("static-access")
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.plot_table);
-		android.app.ActionBar actionBar = getActionBar();
-		actionBar.setTitle("Plot Table");
-		actionBar.show();
+		//android.app.ActionBar actionBar = getActionBar();
+		//actionBar.setTitle("Plot Table");
+		//actionBar.show();
+
+		//get User plots
+		extra = getIntent().getExtras();
+		
+		if(extra.getString("user") != null){
+			curr_user = extra.getString("user");
+			user = User.find(User.class, "username = ?", curr_user);
+			
+			if(user.get(0).getUser_plots() == null){
+				
+				makeToast();
+				
+			}
+		
+		}
+		//*/
+		/**
+		if(extra.getString("user") != null){
+			curr_user = extra.getString("user");
+			
+			List<Plot> user_plots = Plot.listAll(Plot.class);
+
+			if(user_plots.size() > 0){
+				for(Plot p: user_plots){
+					if(p.getUser().equals(curr_user)){
+						myPlots.add(p);
+					}
+				}
+			}else{
+				myPlots = new ArrayList<Plot>();
+			}
+			
+		}
+		//*/
 
 		//set up LocationManager and Listener for GPS
 		currentGPSTasker = null;
@@ -117,28 +157,33 @@ public class PlotTableActivity extends Activity {
 
 	}
 
+	@SuppressLint("ShowToast")
+	private void makeToast() {
+		Toast.makeText(getBaseContext(), "You got here", Toast.LENGTH_SHORT);
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.login, menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.login, menu);
 		return true;
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-			
-			case R.id.action_resources:
-				Intent d = new Intent(this, Resource.class);
-				startActivity(d);
-				break;
-			case R.id.action_help:
-				Intent i = new Intent(this, Help.class);
-				startActivity(i);
-				break;
-			default:
-				break;
-			}
+
+		case R.id.action_resources:
+			Intent d = new Intent(this, Resource.class);
+			startActivity(d);
+			break;
+		case R.id.action_help:
+			Intent i = new Intent(this, Help.class);
+			startActivity(i);
+			break;
+		default:
+			break;
+		}
 		return false;
 	}
 
@@ -150,7 +195,7 @@ public class PlotTableActivity extends Activity {
 		case R.id.new_plot:
 
 			newPlotDialog().show();
-			
+
 
 			break;
 
@@ -276,14 +321,14 @@ public class PlotTableActivity extends Activity {
 				Log.d("GPS", "bestLocation is null");
 				return;
 			}
-			
-			
+
+
 			if (input_plot_lat == null) {
 				Log.d("GPS", "latitude field is null");
 				return;
 			}
 			input_plot_lat.setText(Double.toString(bestLocation.getLatitude()));
-			
+
 			if (input_plot_long == null) {
 				Log.d("GPS", "longitude field is null");
 				return;
@@ -330,17 +375,22 @@ public class PlotTableActivity extends Activity {
 	}
 
 	private void plotToList(String name, String latitude, String longitude) {
-		myPlots.add(new plots(name, latitude, longitude, null));
+		int index;
+		
+		myPlots.add(new Plot(getBaseContext(), curr_user,name, latitude, longitude, null));
+		index = myPlots.size()-1;
+		myPlots.get(index);
+	
 	}
 
 	private void plotsToDisplay(){
 
-		ArrayAdapter <plots> displayPlotsAdapter = new plotDisplayAdapter();
+		ArrayAdapter <Plot> displayPlotsAdapter = new plotDisplayAdapter();
 		ListView list = (ListView) findViewById(R.id.plot_element);
 		list.setAdapter(displayPlotsAdapter);
 	}
 
-	public class plotDisplayAdapter extends ArrayAdapter<plots>{
+	public class plotDisplayAdapter extends ArrayAdapter<Plot>{
 
 		public plotDisplayAdapter() {
 			super(PlotTableActivity.this, R.layout.plot_table_elements, myPlots);
@@ -358,7 +408,7 @@ public class PlotTableActivity extends Activity {
 			}
 
 			//Find plot
-			plots currentPlot = myPlots.get(position);
+			Plot currentPlot = myPlots.get(position);
 
 			//fill the view
 			//plot name
@@ -459,6 +509,7 @@ public class PlotTableActivity extends Activity {
 				Bitmap img = (Bitmap) data.getExtras().get("data");
 
 				myPlots.get(current_position).setImg(img);
+				myPlots.get(current_position).save();
 
 			} else if (resultCode == RESULT_CANCELED) {
 				// User cancelled the image capture
