@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBar;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
