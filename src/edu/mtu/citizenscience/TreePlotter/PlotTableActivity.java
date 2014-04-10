@@ -51,6 +51,8 @@ public class PlotTableActivity extends Activity {
 	private int current_position = -1;
 	private EditText input_plot_lat;
 	private EditText input_plot_long;
+	private boolean isNewPlot;
+	private int plotRow;
 	private LocationManager lManager;
 	private LocationListener gListener;
 	private Location bestLocation;
@@ -72,23 +74,23 @@ public class PlotTableActivity extends Activity {
 
 		//get User plots
 		extra = getIntent().getExtras();
-		
+
 		if(extra.getString("user") != null){
 			curr_user = extra.getString("user");
 			user = User.find(User.class, "username = ?", curr_user);
-			
+
 			if(user.get(0).getUser_plots() == null){
-				
+
 				makeToast();
-				
+
 			}
-		
+
 		}
 		//*/
 		/**
 		if(extra.getString("user") != null){
 			curr_user = extra.getString("user");
-			
+
 			List<Plot> user_plots = Plot.listAll(Plot.class);
 
 			if(user_plots.size() > 0){
@@ -100,7 +102,7 @@ public class PlotTableActivity extends Activity {
 			}else{
 				myPlots = new ArrayList<Plot>();
 			}
-			
+
 		}
 		//*/
 
@@ -108,8 +110,12 @@ public class PlotTableActivity extends Activity {
 		currentGPSTasker = null;
 		//sets up a location Manager
 		lManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		bestLocation = lManager.getLastKnownLocation(lManager.GPS_PROVIDER);
-
+		if (lManager != null) {
+			bestLocation = lManager.getLastKnownLocation(lManager.GPS_PROVIDER);
+		}
+		else {
+			Log.e("GPS", "unable to get location manager");
+		}
 
 		//set up Location listener
 		gListener = new LocationListener() {
@@ -153,8 +159,6 @@ public class PlotTableActivity extends Activity {
 			}
 
 		};
-
-
 	}
 
 	@SuppressLint("ShowToast")
@@ -194,7 +198,7 @@ public class PlotTableActivity extends Activity {
 
 		case R.id.new_plot:
 
-			newPlotDialog().show();
+			plotDialog(null, null, null).show();
 
 
 			break;
@@ -204,10 +208,13 @@ public class PlotTableActivity extends Activity {
 	}
 
 
-	private Dialog newPlotDialog(){
+	private Dialog plotDialog(String aName, String aLatitude, String aLongitude){
 
 		//varibles
-
+		isNewPlot = false;
+		if (aName == null && aLatitude == null && aLongitude == null) {
+			isNewPlot = true;
+		}
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
 		final View layout = inflater.inflate(R.layout.new_plot_dialog, null);
@@ -216,13 +223,24 @@ public class PlotTableActivity extends Activity {
 		input_plot_lat = (EditText)layout.findViewById(R.id.np_plot_lat);
 		input_plot_long = (EditText) layout.findViewById(R.id.np_plot_long);
 
+		//fill in if editing plot
+		if(!isNewPlot) {
+			input_plot_name.setText(aName);
+			input_plot_lat.setText(aLatitude);
+			input_plot_long.setText(aLongitude);
+		}
 
 
 		plot_name = "plot name";
 		plot_lat = "latitude";
 		plot_long = "longitude";
 
-		builder.setTitle("New Plot");
+		if (isNewPlot) {
+			builder.setTitle("New Plot");
+		}
+		else {
+			builder.setTitle("Edit Plot");
+		}
 		builder.setMessage("Enter the plot name and coorinates");
 		builder.setView(layout);
 		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -246,9 +264,11 @@ public class PlotTableActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
+
 				plot_name = "plot name";
 				plot_lat = "latitude";
 				plot_long = "longitude";
+
 			}
 		});
 		ad = builder.create();
@@ -376,11 +396,14 @@ public class PlotTableActivity extends Activity {
 
 	private void plotToList(String name, String latitude, String longitude) {
 		int index;
-		
-		myPlots.add(new Plot(getBaseContext(), curr_user,name, latitude, longitude, null));
-		index = myPlots.size()-1;
-		myPlots.get(index);
-	
+		if (isNewPlot) {
+			myPlots.add(new Plot(getBaseContext(), curr_user,name, latitude, longitude, null));
+			index = myPlots.size()-1;
+			myPlots.get(index);
+		}
+		else {//update plot info in arraylist
+			myPlots.set(plotRow, new Plot(getBaseContext(), curr_user,name, latitude, longitude, null));
+		}
 	}
 
 	private void plotsToDisplay(){
@@ -388,6 +411,21 @@ public class PlotTableActivity extends Activity {
 		ArrayAdapter <Plot> displayPlotsAdapter = new plotDisplayAdapter();
 		ListView list = (ListView) findViewById(R.id.plot_element);
 		list.setAdapter(displayPlotsAdapter);
+		//add on click listener to detect selection
+		list.setOnItemClickListener(new OnItemClickListener() {
+
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				//index in view should be same index in plotList
+				plotRow = position;
+				Plot selectedPlot = myPlots.get(plotRow);
+				// open edit plot dialog
+				plotDialog(selectedPlot.getName(), selectedPlot.getLatitude(), selectedPlot.getLongitude()).show();
+			}
+
+		});
 	}
 
 	public class plotDisplayAdapter extends ArrayAdapter<Plot>{
