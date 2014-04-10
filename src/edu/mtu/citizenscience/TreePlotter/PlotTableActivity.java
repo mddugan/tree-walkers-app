@@ -31,6 +31,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -426,6 +427,52 @@ public class PlotTableActivity extends Activity {
 			}
 
 		});
+		
+		list.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				plotRow = position;
+				deleteDialog().show();
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+		});
+	}
+	
+	private Dialog deleteDialog() {
+		builder = new AlertDialog.Builder(this);
+		LayoutInflater inflater = this.getLayoutInflater();
+		final View layout = inflater.inflate(R.layout.delete_plot_dialog, null);
+		
+		builder.setTitle("Delete Plot");
+		builder.setMessage("Press Delete to Remove Plot");
+		builder.setView(layout);
+		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				myPlots.remove(plotRow);
+				plotsToDisplay();
+			}
+
+		});
+
+
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+
+				
+			}
+		});
+		ad = builder.create();
+		return ad;
 	}
 
 	public class plotDisplayAdapter extends ArrayAdapter<Plot>{

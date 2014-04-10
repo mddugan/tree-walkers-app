@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -338,6 +339,20 @@ public class PlotInfoActivity extends Activity {
 			}
 
 		});
+		
+		list.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				smallTreeRow = position;
+				deleteSmallTreeDialog().show();
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+		});
+		
 	}
 
 	private void LargeTreesDisplay(){
@@ -360,6 +375,87 @@ public class PlotInfoActivity extends Activity {
 			}
 
 		});
+		
+		list.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				largeTreeRow = position;
+				deleteLargeTreeDialog().show();
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+		});
+	}
+	
+	
+	private Dialog deleteSmallTreeDialog() {
+		builder = new AlertDialog.Builder(this);
+		LayoutInflater inflater = this.getLayoutInflater();
+		final View layout = inflater.inflate(R.layout.delete_plot_dialog, null);
+		
+		builder.setTitle("Delete Small Tree");
+		builder.setMessage("Press Delete to Remove Small Tree");
+		builder.setView(layout);
+		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				mySmallTrees.remove(smallTreeRow);
+				SmallTreesDisplay();
+			}
+
+		});
+
+
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+
+				
+			}
+		});
+		ad = builder.create();
+		return ad;
+	}
+	
+	
+	private Dialog deleteLargeTreeDialog() {
+		builder = new AlertDialog.Builder(this);
+		LayoutInflater inflater = this.getLayoutInflater();
+		final View layout = inflater.inflate(R.layout.delete_plot_dialog, null);
+		
+		builder.setTitle("Delete Large Tree");
+		builder.setMessage("Press Delete to Remove Large Tree");
+		builder.setView(layout);
+		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				myLargeTrees.remove(largeTreeRow);
+				LargeTreesDisplay();
+			}
+
+		});
+
+
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+
+				
+			}
+		});
+		ad = builder.create();
+		return ad;
 	}
 
 	private class SmallTreesDisplayAdapter extends ArrayAdapter<Tree>{
