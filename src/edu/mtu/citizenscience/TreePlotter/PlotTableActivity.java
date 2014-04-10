@@ -60,7 +60,7 @@ public class PlotTableActivity extends Activity {
 
 	private Bundle extra;
 	private String curr_user;
-	private List<User> user;
+	private String curr_email;
 
 	@SuppressWarnings("static-access")
 	@SuppressLint("NewApi")
@@ -77,6 +77,7 @@ public class PlotTableActivity extends Activity {
 
 		if(extra.getString("user") != null){
 			curr_user = extra.getString("user");
+			curr_email = extra.getString("email");
 	
 			//get all the plots the current user has
 			myPlots = Plot.find(Plot.class, "user = ?", curr_user);
@@ -374,12 +375,12 @@ public class PlotTableActivity extends Activity {
 		int index;
 		
 		if (isNewPlot) {
-			myPlots.add(new Plot(getBaseContext(), curr_user, name, latitude, longitude, null));
+			myPlots.add(new Plot(getBaseContext(), curr_user, name, latitude, longitude, null, false));
 			index = myPlots.size()-1;
 			myPlots.get(index).save();
 		}
 		else {//update plot info in arraylist
-			myPlots.set(plotRow, new Plot(getBaseContext(), curr_user,name, latitude, longitude, null));
+			myPlots.set(plotRow, new Plot(getBaseContext(), curr_user,name, latitude, longitude, null, false));
 			myPlots.get(plotRow).save();
 		}
 	}
@@ -471,7 +472,7 @@ public class PlotTableActivity extends Activity {
 			}
 
 			//Find plot
-			Plot currentPlot = myPlots.get(position);
+			final Plot currentPlot = myPlots.get(position);
 
 			//fill the view
 			//plot name
@@ -545,6 +546,15 @@ public class PlotTableActivity extends Activity {
 					switch(v.getId()){
 					case R.id.pt_upload:
 						current_position = position;
+						
+						//If the plot has not been uploaded
+						if(currentPlot.isUpload() == false){
+							currentPlot.setUpload(true);
+						}
+						//If the plot has been uploaded
+						else{
+							Toast.makeText(getBaseContext(), "Already been uploaded", Toast.LENGTH_SHORT).show();
+						}
 						break;
 					}
 

@@ -20,6 +20,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 
 	Spinner spinner;
 	private String user;
+	private String email;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		case R.id.plots_table_button:
 			Intent start_pt = new Intent(this, PlotTableActivity.class);
 			start_pt.putExtra("user", user);
+			start_pt.putExtra("email", email);
 			startActivity(start_pt);
 			break;
 		case R.id.login_button:
@@ -103,14 +105,13 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
+	
 		// On selecting a spinner item
 		String label = arg0.getItemAtPosition(arg2).toString();
-		
 		user = label;
-
-		// Showing selected spinner item
-		Toast.makeText(arg0.getContext(), "You selected: " + label,
-				Toast.LENGTH_LONG).show();
+		
+		List<User> curr_user = User.find(User.class, "username = ?", user);
+		email = curr_user.get(0).getEmail();
 
 	}
 
