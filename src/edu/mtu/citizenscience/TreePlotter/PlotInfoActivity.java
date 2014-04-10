@@ -2,13 +2,11 @@ package edu.mtu.citizenscience.TreePlotter;
 
 import java.util.ArrayList;
 
-import edu.mtu.citizenscience.TreePlotter.PlotTableActivity.plotDisplayAdapter;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,8 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+<<<<<<< HEAD
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+=======
+>>>>>>> 1b593dd3581232374a17789a437c8616503e1e3e
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,7 +31,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PlotInfoActivity extends Activity {
 
