@@ -29,7 +29,7 @@ public class LoginActivity extends Activity {
 		    	input_user = (EditText) findViewById(R.id.editUserID);
 		    	input_email = (EditText) findViewById(R.id.editEmail);
 		    	
-		    	User user = new User(getBaseContext(), input_user.getText().toString(), input_email.getText().toString(), "skill", null);
+		    	User user = new User(getBaseContext(), input_user.getText().toString(), input_email.getText().toString(), "skill");
 		    	user.save();
 		    		
 		        Intent i= new Intent(LoginActivity.this, MainActivity.class);

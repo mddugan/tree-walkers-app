@@ -1,6 +1,7 @@
 package edu.mtu.citizenscience.TreePlotter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,11 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-<<<<<<< HEAD
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-=======
->>>>>>> 1b593dd3581232374a17789a437c8616503e1e3e
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -34,8 +32,8 @@ import android.widget.TextView;
 
 public class PlotInfoActivity extends Activity {
 
-	private ArrayList<Tree> myLargeTrees = new ArrayList<Tree>();
-	private ArrayList<Tree> mySmallTrees = new ArrayList<Tree>();
+	private List<Tree> myLargeTrees;
+	private List<Tree> mySmallTrees;
 	private AlertDialog.Builder builder;
 	private AlertDialog ad;
 	private String small_tree_name = " ";
@@ -61,6 +59,14 @@ public class PlotInfoActivity extends Activity {
 
 		if(extra.getString("plot_name") != null){
 			curr_plot_name  = extra.getString("plot_name");
+			
+			//get all the trees for the current plot
+			myLargeTrees = Tree.find(Tree.class, "plot = ? and size = ?", curr_plot_name, "Large");
+			mySmallTrees = Tree.find(Tree.class, "plot = ? and size = ?", curr_plot_name, "Small");
+			
+			//display all the trees a plot has
+			SmallTreesDisplay();
+			LargeTreesDisplay();
 		}
 
 		Button add_small_tree = (Button)findViewById(R.id.pi_add_small);
@@ -191,13 +197,17 @@ public class PlotInfoActivity extends Activity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-
+				int index;
+				
 				small_tree_name = input_tree_name.getText().toString();
 				if (isNewSmallTree) {
-					mySmallTrees.add(new Tree(curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
+					mySmallTrees.add(new Tree(getBaseContext(), curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
+					index = mySmallTrees.size()-1;
+					mySmallTrees.get(index).save();
 				}
 				else {
-					mySmallTrees.set(smallTreeRow, new Tree(curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
+					mySmallTrees.set(smallTreeRow, new Tree(getBaseContext(), curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
+					mySmallTrees.get(smallTreeRow).save();
 				}
 				SmallTreesDisplay();
 
@@ -288,13 +298,16 @@ public class PlotInfoActivity extends Activity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-
+				int index;
 				large_tree_name = input_tree_name.getText().toString();
 				if (isNewLargeTree) {
-					myLargeTrees.add(new Tree(curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
+					myLargeTrees.add(new Tree(getBaseContext() ,curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
+					index = myLargeTrees.size()-1;
+					myLargeTrees.get(index).save();
 				}
 				else {
-					myLargeTrees.set(largeTreeRow, new Tree(curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
+					myLargeTrees.set(largeTreeRow, new Tree(getBaseContext(), curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
+					myLargeTrees.get(largeTreeRow).save();
 				}
 				LargeTreesDisplay();
 
@@ -581,10 +594,12 @@ public class PlotInfoActivity extends Activity {
 
 				if(small_curr_position > 0){
 					mySmallTrees.get(small_curr_position).setImg(img);
+					mySmallTrees.get(small_curr_position).save();
 					small_curr_position = -1;
 				}
 				if(large_curr_position > 0){
 					myLargeTrees.get(large_curr_position).setImg(img);
+					myLargeTrees.get(large_curr_position).save();
 					large_curr_position = -1;
 				}
 

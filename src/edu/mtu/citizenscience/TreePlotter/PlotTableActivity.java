@@ -43,7 +43,7 @@ import android.widget.Toast;
 
 public class PlotTableActivity extends Activity {
 
-	private ArrayList<Plot> myPlots = new ArrayList<Plot>();
+	private List<Plot> myPlots;
 	private AlertDialog.Builder builder;
 	private AlertDialog ad;
 	private  String plot_name = "plot name" , plot_lat = "latitude", plot_long = "longitude";
@@ -77,34 +77,15 @@ public class PlotTableActivity extends Activity {
 
 		if(extra.getString("user") != null){
 			curr_user = extra.getString("user");
-			user = User.find(User.class, "username = ?", curr_user);
-
-			if(user.get(0).getUser_plots() == null){
-
-				makeToast();
-
-			}
-
+	
+			//get all the plots the current user has
+			myPlots = Plot.find(Plot.class, "user = ?", curr_user);
+			
+			//Display the plots a current user has
+			plotsToDisplay();
+			
 		}
-		//*/
-		/**
-		if(extra.getString("user") != null){
-			curr_user = extra.getString("user");
 
-			List<Plot> user_plots = Plot.listAll(Plot.class);
-
-			if(user_plots.size() > 0){
-				for(Plot p: user_plots){
-					if(p.getUser().equals(curr_user)){
-						myPlots.add(p);
-					}
-				}
-			}else{
-				myPlots = new ArrayList<Plot>();
-			}
-
-		}
-		//*/
 
 		//set up LocationManager and Listener for GPS
 		currentGPSTasker = null;
@@ -160,12 +141,7 @@ public class PlotTableActivity extends Activity {
 
 		};
 	}
-
-	@SuppressLint("ShowToast")
-	private void makeToast() {
-		Toast.makeText(getBaseContext(), "You got here", Toast.LENGTH_SHORT);
-	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -199,7 +175,6 @@ public class PlotTableActivity extends Activity {
 		case R.id.new_plot:
 
 			plotDialog(null, null, null).show();
-
 
 			break;
 
@@ -251,6 +226,7 @@ public class PlotTableActivity extends Activity {
 				plot_name =  input_plot_name.getText().toString();
 				plot_lat = input_plot_lat.getText().toString();
 				plot_long = input_plot_long.getText().toString();
+	
 
 				plotToList(plot_name, plot_lat, plot_long);
 				plotsToDisplay();
@@ -396,13 +372,15 @@ public class PlotTableActivity extends Activity {
 
 	private void plotToList(String name, String latitude, String longitude) {
 		int index;
+		
 		if (isNewPlot) {
-			myPlots.add(new Plot(getBaseContext(), curr_user,name, latitude, longitude, null));
+			myPlots.add(new Plot(getBaseContext(), curr_user, name, latitude, longitude, null));
 			index = myPlots.size()-1;
-			myPlots.get(index);
+			myPlots.get(index).save();
 		}
 		else {//update plot info in arraylist
 			myPlots.set(plotRow, new Plot(getBaseContext(), curr_user,name, latitude, longitude, null));
+			myPlots.get(plotRow).save();
 		}
 	}
 
@@ -480,6 +458,7 @@ public class PlotTableActivity extends Activity {
 			super(PlotTableActivity.this, R.layout.plot_table_elements, myPlots);
 			// TODO Auto-generated constructor stub
 		}
+		
 
 		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {

@@ -27,6 +27,11 @@ public class Plot extends SugarRecord<Plot>{
 		
 	}
 
+
+	public String getUser() {
+		return user;
+	}
+	
 	public Bitmap getImg() {
 		return img;
 	}
@@ -47,8 +52,5 @@ public class Plot extends SugarRecord<Plot>{
 		return longitude;
 	}
 
-	public String getUser() {
-		return user;
-	}
 
 }

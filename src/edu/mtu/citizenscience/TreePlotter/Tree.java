@@ -1,18 +1,26 @@
 package edu.mtu.citizenscience.TreePlotter;
 
+import com.orm.SugarRecord;
+
+import android.content.Context;
 import android.graphics.Bitmap;
 
-public class Tree {
+public class Tree extends SugarRecord<Tree>{
 
-	private String plot_name;
+	private String plot;
 	private String name;
 	private String abundance;
 	private String size;
 	private Bitmap img;
 	
-	public Tree(String plot_name, String name, String abundance, String size, Bitmap img) {
-		super();
-		this.plot_name = plot_name;
+	
+	public Tree(Context ctx){
+		super(ctx);
+	}
+	
+	public Tree(Context ctx, String plot, String name, String abundance, String size, Bitmap img) {
+		super(ctx);
+		this.plot = plot;
 		this.name = name;
 		this.abundance = abundance;
 		this.size = size;
@@ -44,11 +52,11 @@ public class Tree {
 	}
 
 	public String getPlot_name() {
-		return plot_name;
+		return plot;
 	}
 
-	public void setPlot_name(String plot_name) {
-		this.plot_name = plot_name;
+	public void setPlot_name(String plot) {
+		this.plot = plot;
 	}
 	
 }

@@ -11,27 +11,20 @@ public class User extends SugarRecord<User>{
 	private String username;
 	private String email;
 	private String skill_level;
-	private List<Plot> user_plots;
+
 	
 	public User(Context context){
 		super(context);
 	}
 	
-	public User(Context context, String username, String email, String skill_level, List<Plot> user_plots) {
+	public User(Context context, String username, String email, String skill_level) {
 		super(context);
 		this.username = username;
 		this.email = email;
 		this.skill_level = skill_level;
-		this.user_plots = user_plots;
 	}
 	
-	public List<Plot> getUser_plots() {
-		return user_plots;
-	}
 
-	public void setUser_plots(List<Plot> user_plots) {
-		this.user_plots = user_plots;
-	}
 
 	public String getUsername() {
 		return username;
