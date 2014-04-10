@@ -45,6 +45,11 @@ public class PlotInfoActivity extends Activity {
 	private int large_curr_position = -1;
 	private Bundle extra;
 	private String curr_plot_name;
+	private int smallTreeRow;
+	private int largeTreeRow;
+	private boolean isNewSmallTree;
+	private boolean isNewLargeTree;
+	private String[] abundanceLevels;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +57,7 @@ public class PlotInfoActivity extends Activity {
 		setContentView(R.layout.plot_info_activity);
 
 		extra = getIntent().getExtras();
-		
+
 		if(extra.getString("plot_name") != null){
 			curr_plot_name  = extra.getString("plot_name");
 		}
@@ -63,7 +68,7 @@ public class PlotInfoActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 
-				addSmallTreeDialog().show();
+				smallTreeDialog(null, null).show();
 			}
 
 		});
@@ -74,14 +79,14 @@ public class PlotInfoActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 
-				addLargeTreeDialog().show();
+				largeTreeDialog(null, null).show();
 
 			}
 
 
 		});
 
-
+		abundanceLevels = new String[]{"Rare", "Uncommon", "Common"};
 
 
 	}
@@ -116,15 +121,30 @@ public class PlotInfoActivity extends Activity {
 
 
 
-	private Dialog addSmallTreeDialog() {
+	private Dialog smallTreeDialog(String aName, String aAbundance) {
+		isNewSmallTree = false;
+
+		if(aName == null && aAbundance == null) {
+			isNewSmallTree = true;
+		}
+
 
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
 		final View layout = inflater.inflate(R.layout.add_tree_dialog, null);
 
 		final EditText input_tree_name = (EditText)layout.findViewById(R.id.atd_fillname);
+		if (!isNewSmallTree) {
+			input_tree_name.setText(aName);
+		}
 
-		builder.setTitle("New Small Tree");
+
+		if (isNewSmallTree) {
+			builder.setTitle("New Small Tree");
+		}
+		else {
+			builder.setTitle("Edit Small Tree");
+		}
 		builder.setMessage("Enter the Small Tree Name and Abundance");
 
 		Spinner spinner = (Spinner)layout.findViewById(R.id.atd_abundance);
@@ -154,7 +174,16 @@ public class PlotInfoActivity extends Activity {
 
 		});
 
-
+		if (!isNewSmallTree) {
+			int index = 0;
+			for(String s : abundanceLevels) {
+				if (aAbundance.equals(s)) {
+					spinner.setSelection(index);
+					break;
+				}
+				++index;
+			}
+		}
 
 
 		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -163,7 +192,12 @@ public class PlotInfoActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 
 				small_tree_name = input_tree_name.getText().toString();
-				mySmallTrees.add(new Tree(curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
+				if (isNewSmallTree) {
+					mySmallTrees.add(new Tree(curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
+				}
+				else {
+					mySmallTrees.set(smallTreeRow, new Tree(curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
+				}
 				SmallTreesDisplay();
 
 
@@ -186,15 +220,29 @@ public class PlotInfoActivity extends Activity {
 
 	}
 
-	private Dialog addLargeTreeDialog() {
+	private Dialog largeTreeDialog(String aName, String aAbundance) {
+
+		isNewLargeTree = false;
+
+		if(aName == null && aAbundance == null) {
+			isNewLargeTree = true;
+		}
 
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
 		final View layout = inflater.inflate(R.layout.add_tree_dialog, null);
 
 		final EditText input_tree_name = (EditText)layout.findViewById(R.id.atd_fillname);
-
-		builder.setTitle("New Large Tree");
+		if (!isNewLargeTree) {
+			input_tree_name.setText(aName);
+		}
+		
+		if (isNewLargeTree) {
+			builder.setTitle("New Large Tree");
+		}
+		else {
+			builder.setTitle("Edit Large Tree");
+		}
 		builder.setMessage("Enter the Large Tree Name and Abundance");
 
 		Spinner spinner = (Spinner)layout.findViewById(R.id.atd_abundance);
@@ -224,7 +272,15 @@ public class PlotInfoActivity extends Activity {
 
 		});
 
-
+		if (!isNewLargeTree) {
+			int index = 0;
+			for (String s : abundanceLevels) {
+				if (aAbundance.equals(s)) {
+					spinner.setSelection(index);
+				}
+				++index;
+			}
+		}
 
 
 		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -233,7 +289,12 @@ public class PlotInfoActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 
 				large_tree_name = input_tree_name.getText().toString();
-				myLargeTrees.add(new Tree(curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
+				if (isNewLargeTree) {
+					myLargeTrees.add(new Tree(curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
+				}
+				else {
+					myLargeTrees.set(largeTreeRow, new Tree(curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
+				}
 				LargeTreesDisplay();
 
 
@@ -262,7 +323,21 @@ public class PlotInfoActivity extends Activity {
 		ArrayAdapter <Tree> displaySmallTreesAdapter = new SmallTreesDisplayAdapter();
 		ListView list = (ListView) findViewById(R.id.pi_small_list);
 		list.setAdapter(displaySmallTreesAdapter);
+		//add on click listener to detect selection
+		list.setOnItemClickListener(new OnItemClickListener() {
 
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				//index in view should be same index in plotList
+				smallTreeRow = position;
+				Tree selectedTree = mySmallTrees.get(smallTreeRow);
+				// open edit plot dialog
+				smallTreeDialog(selectedTree.getName(), selectedTree.getAbundance()).show();
+			}
+
+		});
 	}
 
 	private void LargeTreesDisplay(){
@@ -270,7 +345,21 @@ public class PlotInfoActivity extends Activity {
 		ArrayAdapter <Tree> displayLargeTreesAdapter = new LargeTreesDisplayAdapter();
 		ListView list = (ListView) findViewById(R.id.pi_large_list);
 		list.setAdapter(displayLargeTreesAdapter);
+		//add on click listener to detect selection
+		list.setOnItemClickListener(new OnItemClickListener() {
 
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				//index in view should be same index in plotList
+				largeTreeRow = position;
+				Tree selectedTree = myLargeTrees.get(largeTreeRow);
+				// open edit plot dialog
+				largeTreeDialog(selectedTree.getName(), selectedTree.getAbundance()).show();
+			}
+
+		});
 	}
 
 	private class SmallTreesDisplayAdapter extends ArrayAdapter<Tree>{
