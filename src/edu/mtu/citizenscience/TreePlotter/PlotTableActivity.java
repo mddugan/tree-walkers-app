@@ -550,6 +550,7 @@ public class PlotTableActivity extends Activity {
 						//If the plot has not been uploaded
 						if(currentPlot.isUpload() == false){
 							currentPlot.setUpload(true);
+							currentPlot.save();
 						}
 						//If the plot has been uploaded
 						else{
