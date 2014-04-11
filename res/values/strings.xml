@@ -47,4 +47,9 @@
         <item>Common</item>
     </string-array>
 
+    <string name="title_activity_help1">Help1</string>
+    <string name="title_activity_help2">Help2</string>
+    <string name="title_activity_help3">Help3</string>
+    <string name="title_activity_help4">Help4</string>
+
 </resources>
