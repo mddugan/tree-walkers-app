@@ -52,6 +52,7 @@ public class PlotTableActivity extends Activity {
 	private EditText input_plot_lat;
 	private EditText input_plot_long;
 	private boolean isNewPlot;
+	private int invaildInfo = 0;
 	private int plotRow;
 	private LocationManager lManager;
 	private LocationListener gListener;
@@ -168,7 +169,6 @@ public class PlotTableActivity extends Activity {
 		return false;
 	}
 
-
 	public void onClick(View v) {
 
 		switch(v.getId()){
@@ -183,12 +183,11 @@ public class PlotTableActivity extends Activity {
 		}
 	}
 
-
 	private Dialog plotDialog(String aName, String aLatitude, String aLongitude){
 
 		//varibles
 		isNewPlot = false;
-		if (aName == null && aLatitude == null && aLongitude == null) {
+		if ((aName == null && aLatitude == null && aLongitude == null) || (invaildInfo == 1)) {
 			isNewPlot = true;
 		}
 		builder = new AlertDialog.Builder(this);
@@ -200,7 +199,7 @@ public class PlotTableActivity extends Activity {
 		input_plot_long = (EditText) layout.findViewById(R.id.np_plot_long);
 
 		//fill in if editing plot
-		if(!isNewPlot) {
+		if((!isNewPlot) || (invaildInfo == 1)) {
 			input_plot_name.setText(aName);
 			input_plot_lat.setText(aLatitude);
 			input_plot_long.setText(aLongitude);
@@ -227,10 +226,28 @@ public class PlotTableActivity extends Activity {
 				plot_name =  input_plot_name.getText().toString();
 				plot_lat = input_plot_lat.getText().toString();
 				plot_long = input_plot_long.getText().toString();
-	
+				
+				int valid_name = checkPlotname(plot_name);
+				int valid_coor = checkCoor(plot_lat, plot_long);
+				
+				if((valid_name != 0) && ( valid_coor == 0)){
+					Toast.makeText(PlotTableActivity.this, "Invaild or No Plot Name", Toast.LENGTH_SHORT).show();
+					invaildInfo = 1;
+					plotDialog(null, plot_lat, plot_long).show();
+				}else if((valid_name == 0) && ( valid_coor != 0)){
+					Toast.makeText(PlotTableActivity.this, "Need Coordinate", Toast.LENGTH_SHORT).show();
+					invaildInfo = 1;
+					plotDialog(plot_name, null, null).show();
+				}else if((valid_name != 0) && ( valid_coor != 0)){
+					Toast.makeText(PlotTableActivity.this, "Need Coordinate and vaild Plot Name", Toast.LENGTH_SHORT).show();
+					invaildInfo = 1;
+					plotDialog(null, null, null).show();
+				}else{
+					invaildInfo = 0;
+					plotToList(plot_name, plot_lat, plot_long);
+					plotsToDisplay();
+				}
 
-				plotToList(plot_name, plot_lat, plot_long);
-				plotsToDisplay();
 			}
 
 		});
@@ -251,6 +268,51 @@ public class PlotTableActivity extends Activity {
 		ad = builder.create();
 		return ad;
 	}
+	
+	/*
+	 * Check the plot name.
+	 * Plot name must be at least length of 4 char and less then 11 char
+	 * Plot name must also be unique 
+	 * */
+	private int checkPlotname(String plot_name) {
+		
+		List<Plot> all_plots = Plot.listAll(Plot.class);
+		int vaild = 0;
+		
+		if(plot_name.isEmpty()){
+			return -1;
+		}
+		
+		if((plot_name.length() < 4) || (plot_name.length() > 11)){
+			return -1;
+		}
+		
+		for(int i=0; i < all_plots.size(); i++){
+			
+			if(all_plots.get(i).getName().equalsIgnoreCase(plot_name)){
+				vaild = 1;
+			}
+		}
+		
+		if(vaild == 0){
+			return vaild;
+		}else{
+			return 1;
+		}
+		
+	}//endof checkPlotname
+
+	/*
+	 * Check the coordinates
+	 * */
+	private int checkCoor(String plot_lat, String plot_long) {
+		
+		if(plot_lat.isEmpty() || plot_long.isEmpty()){
+			return 1;
+		}else{
+			return 0;
+		}
+	}//endof checkCoor
 
 	private class GPSUpdaterTask extends AsyncTask<Void, Void, Void> {
 		private final float MAX_INACCURACY = 100; //in meters

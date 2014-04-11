@@ -5,11 +5,17 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -21,6 +27,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 	Spinner spinner;
 	private String user;
 	private String email;
+	private AlertDialog.Builder builder;
+	private AlertDialog ad;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +38,43 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		spinner = (Spinner) findViewById(R.id.Users_spinner);
 
 		spinner.setOnItemSelectedListener( this);
+		spinner.setOnLongClickListener(new OnLongClickListener(){
+
+			@Override
+			public boolean onLongClick(View v) {
+				
+				deleteUserDialog().show();
+				
+				return false;
+			}
+			
+		});
 
 		loadSpinner();
 	}
+	
+	private Dialog deleteUserDialog(){
+		
+		builder = new AlertDialog.Builder(this);
+		LayoutInflater inflater = this.getLayoutInflater();
+		final View layout = inflater.inflate(R.layout.delete_user_dialog, null);
+		
+		builder.setTitle("Delete User Tree");
+		builder.setMessage("Press Delete to User");
+		builder.setView(layout);
+		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener(){
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Toast.makeText(MainActivity.this, user, Toast.LENGTH_SHORT).show();
+			}
+	
+		});
+		
+		ad = builder.create();
+		return ad;
+	}
+	
 
 	private void loadSpinner() {
 		

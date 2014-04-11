@@ -49,6 +49,8 @@ public class PlotInfoActivity extends Activity {
 	private boolean isNewSmallTree;
 	private boolean isNewLargeTree;
 	private String[] abundanceLevels;
+	private int invaildSmall = 0;
+	private int invalidLarge = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +61,11 @@ public class PlotInfoActivity extends Activity {
 
 		if(extra.getString("plot_name") != null){
 			curr_plot_name  = extra.getString("plot_name");
-			
+
 			//get all the trees for the current plot
 			myLargeTrees = Tree.find(Tree.class, "plot = ? and size = ?", curr_plot_name, "Large");
 			mySmallTrees = Tree.find(Tree.class, "plot = ? and size = ?", curr_plot_name, "Small");
-			
+
 			//display all the trees a plot has
 			SmallTreesDisplay();
 			LargeTreesDisplay();
@@ -125,13 +127,10 @@ public class PlotInfoActivity extends Activity {
 		return false;
 	}
 
-
-
-
 	private Dialog smallTreeDialog(String aName, String aAbundance) {
 		isNewSmallTree = false;
 
-		if(aName == null && aAbundance == null) {
+		if((aName == null && aAbundance == null) || (invaildSmall == 1)) {
 			isNewSmallTree = true;
 		}
 
@@ -146,7 +145,7 @@ public class PlotInfoActivity extends Activity {
 		}
 
 
-		if (isNewSmallTree) {
+		if (isNewSmallTree || (invaildSmall == 1)) {
 			builder.setTitle("New Small Tree");
 		}
 		else {
@@ -198,21 +197,33 @@ public class PlotInfoActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				int index;
-				
+
 				small_tree_name = input_tree_name.getText().toString();
-				if (isNewSmallTree) {
-					mySmallTrees.add(new Tree(getBaseContext(), curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
-					index = mySmallTrees.size()-1;
-					mySmallTrees.get(index).save();
+
+				int valid = checkTreeName(small_tree_name);
+
+				if(valid != 0){
+					invaildSmall = 1;
+					smallTreeDialog(small_tree_name, abundance_lvl).show();
 				}
-				else {
-					mySmallTrees.get(smallTreeRow).delete();
-					mySmallTrees.set(smallTreeRow, new Tree(getBaseContext(), curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
-					mySmallTrees.get(smallTreeRow).save();
-				}
-				SmallTreesDisplay();
+				else{
+
+					invaildSmall = 0;
+
+					if (isNewSmallTree) {
+						mySmallTrees.add(new Tree(getBaseContext(), curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
+						index = mySmallTrees.size()-1;
+						mySmallTrees.get(index).save();
+					}
+					else {
+						mySmallTrees.get(smallTreeRow).delete();
+						mySmallTrees.set(smallTreeRow, new Tree(getBaseContext(), curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
+						mySmallTrees.get(smallTreeRow).save();
+					}
+					SmallTreesDisplay();
 
 
+				}
 			}
 
 		});
@@ -232,11 +243,24 @@ public class PlotInfoActivity extends Activity {
 
 	}
 
+	private int checkTreeName(String tree_name) {
+
+		if(tree_name.isEmpty()){
+			return -1;
+		}else{
+			return 0;
+		}
+
+	}
+
+
+
+
 	private Dialog largeTreeDialog(String aName, String aAbundance) {
 
 		isNewLargeTree = false;
 
-		if(aName == null && aAbundance == null) {
+		if((aName == null && aAbundance == null) || (invalidLarge == 1)) {
 			isNewLargeTree = true;
 		}
 
@@ -248,8 +272,8 @@ public class PlotInfoActivity extends Activity {
 		if (!isNewLargeTree) {
 			input_tree_name.setText(aName);
 		}
-		
-		if (isNewLargeTree) {
+
+		if (isNewLargeTree || (invalidLarge == 1)) {
 			builder.setTitle("New Large Tree");
 		}
 		else {
@@ -301,17 +325,28 @@ public class PlotInfoActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				int index;
 				large_tree_name = input_tree_name.getText().toString();
-				if (isNewLargeTree) {
-					myLargeTrees.add(new Tree(getBaseContext() ,curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
-					index = myLargeTrees.size()-1;
-					myLargeTrees.get(index).save();
+
+				int valid = checkTreeName(large_tree_name);
+
+				if(valid != 0){
+					invalidLarge = 1;
+					largeTreeDialog(large_tree_name, abundance_lvl).show();
+					
+				}else{
+					invalidLarge = 0;
+					if (isNewLargeTree) {
+						myLargeTrees.add(new Tree(getBaseContext() ,curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
+						index = myLargeTrees.size()-1;
+						myLargeTrees.get(index).save();
+					}
+					else {
+						myLargeTrees.get(largeTreeRow).delete();
+						myLargeTrees.set(largeTreeRow, new Tree(getBaseContext(), curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
+						myLargeTrees.get(largeTreeRow).save();
+					}
+
+					LargeTreesDisplay();
 				}
-				else {
-					myLargeTrees.get(largeTreeRow).delete();
-					myLargeTrees.set(largeTreeRow, new Tree(getBaseContext(), curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
-					myLargeTrees.get(largeTreeRow).save();
-				}
-				LargeTreesDisplay();
 
 
 			}
@@ -354,7 +389,7 @@ public class PlotInfoActivity extends Activity {
 			}
 
 		});
-		
+
 		list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
@@ -365,9 +400,9 @@ public class PlotInfoActivity extends Activity {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 		});
-		
+
 	}
 
 	private void LargeTreesDisplay(){
@@ -390,7 +425,7 @@ public class PlotInfoActivity extends Activity {
 			}
 
 		});
-		
+
 		list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
@@ -401,16 +436,15 @@ public class PlotInfoActivity extends Activity {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 		});
 	}
-	
-	
+
 	private Dialog deleteSmallTreeDialog() {
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
 		final View layout = inflater.inflate(R.layout.delete_plot_dialog, null);
-		
+
 		builder.setTitle("Delete Small Tree");
 		builder.setMessage("Press Delete to Remove Small Tree");
 		builder.setView(layout);
@@ -418,7 +452,7 @@ public class PlotInfoActivity extends Activity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
+
 				mySmallTrees.get(smallTreeRow).delete();
 				mySmallTrees.remove(smallTreeRow);
 				SmallTreesDisplay();
@@ -433,19 +467,18 @@ public class PlotInfoActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
 
-				
+
 			}
 		});
 		ad = builder.create();
 		return ad;
 	}
-	
-	
+
 	private Dialog deleteLargeTreeDialog() {
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
 		final View layout = inflater.inflate(R.layout.delete_plot_dialog, null);
-		
+
 		builder.setTitle("Delete Large Tree");
 		builder.setMessage("Press Delete to Remove Large Tree");
 		builder.setView(layout);
@@ -453,7 +486,7 @@ public class PlotInfoActivity extends Activity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
+
 				myLargeTrees.get(largeTreeRow).delete();
 				myLargeTrees.remove(largeTreeRow);
 				LargeTreesDisplay();
@@ -468,7 +501,7 @@ public class PlotInfoActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
 
-				
+
 			}
 		});
 		ad = builder.create();
