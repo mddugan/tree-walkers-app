@@ -380,6 +380,7 @@ public class PlotTableActivity extends Activity {
 			myPlots.get(index).save();
 		}
 		else {//update plot info in arraylist
+			myPlots.get(plotRow).delete();
 			myPlots.set(plotRow, new Plot(getBaseContext(), curr_user,name, latitude, longitude, null, false));
 			myPlots.get(plotRow).save();
 		}
@@ -433,6 +434,8 @@ public class PlotTableActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				
+				
+				myPlots.get(plotRow).delete();
 				myPlots.remove(plotRow);
 				plotsToDisplay();
 			}
@@ -551,6 +554,7 @@ public class PlotTableActivity extends Activity {
 						if(currentPlot.isUpload() == false){
 							currentPlot.setUpload(true);
 							currentPlot.save();
+							Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
 						}
 						//If the plot has been uploaded
 						else{

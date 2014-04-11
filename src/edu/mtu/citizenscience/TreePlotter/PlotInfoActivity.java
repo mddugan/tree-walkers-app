@@ -206,6 +206,7 @@ public class PlotInfoActivity extends Activity {
 					mySmallTrees.get(index).save();
 				}
 				else {
+					mySmallTrees.get(smallTreeRow).delete();
 					mySmallTrees.set(smallTreeRow, new Tree(getBaseContext(), curr_plot_name ,small_tree_name, abundance_lvl, "Small", null));
 					mySmallTrees.get(smallTreeRow).save();
 				}
@@ -306,6 +307,7 @@ public class PlotInfoActivity extends Activity {
 					myLargeTrees.get(index).save();
 				}
 				else {
+					myLargeTrees.get(largeTreeRow).delete();
 					myLargeTrees.set(largeTreeRow, new Tree(getBaseContext(), curr_plot_name, large_tree_name, abundance_lvl, "Large", null));
 					myLargeTrees.get(largeTreeRow).save();
 				}
@@ -417,6 +419,7 @@ public class PlotInfoActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				
+				mySmallTrees.get(smallTreeRow).delete();
 				mySmallTrees.remove(smallTreeRow);
 				SmallTreesDisplay();
 			}
@@ -451,6 +454,7 @@ public class PlotInfoActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				
+				myLargeTrees.get(largeTreeRow).delete();
 				myLargeTrees.remove(largeTreeRow);
 				LargeTreesDisplay();
 			}
