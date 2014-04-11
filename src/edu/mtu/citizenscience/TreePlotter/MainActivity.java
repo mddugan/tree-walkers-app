@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
-		final View layout = inflater.inflate(R.layout.delete_user_dialog, null);
+		final View layout = inflater.inflate(R.layout.delete_plot_dialog, null);
 		
 		builder.setTitle("Delete User Tree");
 		builder.setMessage("Press Delete to User");
