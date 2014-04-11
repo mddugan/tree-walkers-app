@@ -37,19 +37,18 @@ public final class R {
     }
     public static final class drawable {
         public static final int ic_action_help=0x7f020000;
-        public static final int ic_action_locate=0x7f020001;
-        public static final int ic_action_paste=0x7f020002;
-        public static final int ic_action_photo=0x7f020003;
-        public static final int ic_action_send=0x7f020004;
-        public static final int ic_cd=0x7f020005;
-        public static final int ic_launcher=0x7f020006;
-        public static final int ic_quarter=0x7f020007;
+        public static final int ic_action_photo=0x7f020001;
+        public static final int ic_action_send=0x7f020002;
+        public static final int ic_cd=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int ic_leaf=0x7f020005;
+        public static final int ic_quarter=0x7f020006;
     }
     public static final class id {
         public static final int Users_spinner=0x7f0b0011;
-        public static final int action_help=0x7f0b0033;
-        public static final int action_resources=0x7f0b0034;
-        public static final int action_settings=0x7f0b0032;
+        public static final int action_help=0x7f0b0032;
+        public static final int action_resources=0x7f0b0033;
+        public static final int action_settings=0x7f0b0031;
         public static final int atd_abund_level=0x7f0b0019;
         public static final int atd_abundance=0x7f0b001a;
         public static final int atd_fillname=0x7f0b0018;
@@ -61,10 +60,10 @@ public final class R {
         public static final int editUserID=0x7f0b0003;
         public static final int imageView1=0x7f0b0014;
         public static final int imageView2=0x7f0b0016;
-        public static final int latitude=0x7f0b0031;
+        public static final int latitude=0x7f0b0030;
         public static final int login_button=0x7f0b0010;
         public static final int login_form=0x7f0b0002;
-        public static final int longitude=0x7f0b0030;
+        public static final int longitude=0x7f0b002f;
         public static final int new_plot=0x7f0b0029;
         public static final int np_plot_lat=0x7f0b001e;
         public static final int np_plot_long=0x7f0b001f;
@@ -85,7 +84,6 @@ public final class R {
         public static final int plots_table_button=0x7f0b000f;
         public static final int pt_camera=0x7f0b002e;
         public static final int pt_info=0x7f0b002d;
-        public static final int pt_location=0x7f0b002f;
         public static final int pt_upload=0x7f0b002c;
         public static final int rg_adv=0x7f0b000b;
         public static final int rg_beg=0x7f0b0009;

@@ -552,21 +552,6 @@ public class PlotTableActivity extends Activity {
 			TextView plot_long = (TextView) plotView.findViewById(R.id.longitude);
 			plot_long.setText(currentPlot.getLongitude());
 
-			//Configuration for the location/gps button on the List view
-			final ImageButton location_button = (ImageButton) plotView.findViewById(R.id.pt_location);
-			location_button.setOnClickListener(new OnClickListener(){
-
-				@Override
-				public void onClick(View v) {
-					switch(v.getId()){
-					case R.id.pt_location:
-						current_position = position;
-						break;
-					}
-
-				}
-
-			});
 
 			//Configuration for the camera button on the List view
 			final ImageButton camera_button = (ImageButton) plotView.findViewById(R.id.pt_camera);

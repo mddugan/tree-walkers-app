@@ -26,7 +26,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
-        android:src="@drawable/ic_action_paste"
+        android:src="@drawable/ic_leaf"
         android:contentDescription="@string/plot_info"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/pt_upload"
@@ -42,17 +42,6 @@
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/pt_info"
         android:text="@string/camera" />
-
-    <ImageButton
-        android:id="@+id/pt_location"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_action_locate"
-        android:contentDescription="@string/location"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/pt_camera"
-        android:text="@string/location" />
 
     <TextView
         android:id="@+id/longitude"
