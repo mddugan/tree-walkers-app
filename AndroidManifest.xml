@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="DATABASE"
-            android:value="Tree_Plotter.db" />
+            android:value="TreesPlotterDB_v1.1.db" />
         <meta-data
             android:name="VERSION"
             android:value="2" />
@@ -28,7 +28,7 @@
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="edu.mtu.citizenscience.TreePlotter" />
-
+        
         <activity
             android:name="edu.mtu.citizenscience.TreePlotter.MainActivity"
             android:label="@string/app_name" >
@@ -44,6 +44,26 @@
         </activity>
         <activity
             android:name="edu.mtu.citizenscience.TreePlotter.Help"
+            android:label="@string/title_activity_help"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.Help1"
+            android:label="@string/title_activity_help"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.Help2"
+            android:label="@string/title_activity_help"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.Help3"
+            android:label="@string/title_activity_help"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.Help4"
             android:label="@string/title_activity_help"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>

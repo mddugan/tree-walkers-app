@@ -43,10 +43,6 @@ public class Resource extends Activity {
 		switch (item.getItemId()) {
 			case R.id.action_resources:
 				break;
-			case R.id.action_help:
-				Intent i = new Intent(this, Help.class);
-				startActivity(i);
-				break;
 			default:
 				break;
 			}

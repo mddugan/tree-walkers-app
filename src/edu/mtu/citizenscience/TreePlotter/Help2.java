@@ -14,12 +14,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Help extends Activity {
+public class Help2 extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_help);
+		setContentView(R.layout.activity_help2);
 	}
 	
 	public boolean onTouchEvent(MotionEvent event){

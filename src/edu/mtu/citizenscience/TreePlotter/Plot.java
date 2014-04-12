@@ -12,21 +12,28 @@ public class Plot extends SugarRecord<Plot>{
 	private String latitude;
 	private String longitude;
 	private Bitmap img;
+	private boolean upload;
 	
 	public Plot(Context ctx){
 		super(ctx);
 	}
 	
-	public Plot(Context ctx, String user ,String name, String latitude, String longitude, Bitmap img) {
+	public Plot(Context ctx, String user ,String name, String latitude, String longitude, Bitmap img, boolean upload) {
 		super(ctx);
 		this.user = user;
 		this.name = name;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.img = img;
+		this.upload = upload;
 		
 	}
 
+
+	public String getUser() {
+		return user;
+	}
+	
 	public Bitmap getImg() {
 		return img;
 	}
@@ -47,8 +54,12 @@ public class Plot extends SugarRecord<Plot>{
 		return longitude;
 	}
 
-	public String getUser() {
-		return user;
+	public boolean isUpload() {
+		return upload;
+	}
+
+	public void setUpload(boolean upload) {
+		this.upload = upload;
 	}
 
 }

@@ -2,7 +2,6 @@ package edu.mtu.citizenscience.TreePlotter;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -44,7 +43,7 @@ import android.widget.Toast;
 
 public class PlotTableActivity extends Activity {
 
-	private ArrayList<Plot> myPlots = new ArrayList<Plot>();
+	private List<Plot> myPlots;
 	private AlertDialog.Builder builder;
 	private AlertDialog ad;
 	private AlertDialog dd;
@@ -55,6 +54,7 @@ public class PlotTableActivity extends Activity {
 	private EditText input_plot_lat;
 	private EditText input_plot_long;
 	private boolean isNewPlot;
+	private int invaildInfo = 0;
 	private int plotRow;
 	private LocationManager lManager;
 	private LocationListener gListener;
@@ -64,7 +64,7 @@ public class PlotTableActivity extends Activity {
 
 	private Bundle extra;
 	private String curr_user;
-	private List<User> user;
+	private String curr_email;
 
 	@SuppressWarnings("static-access")
 	@SuppressLint("NewApi")
@@ -81,34 +81,16 @@ public class PlotTableActivity extends Activity {
 
 		if(extra.getString("user") != null){
 			curr_user = extra.getString("user");
-			user = User.find(User.class, "username = ?", curr_user);
-
-			if(user.get(0).getUser_plots() == null){
-
-				makeToast();
-
-			}
-
+			curr_email = extra.getString("email");
+	
+			//get all the plots the current user has
+			myPlots = Plot.find(Plot.class, "user = ?", curr_user);
+			
+			//Display the plots a current user has
+			plotsToDisplay();
+			
 		}
-		//*/
-		/**
-		if(extra.getString("user") != null){
-			curr_user = extra.getString("user");
 
-			List<Plot> user_plots = Plot.listAll(Plot.class);
-
-			if(user_plots.size() > 0){
-				for(Plot p: user_plots){
-					if(p.getUser().equals(curr_user)){
-						myPlots.add(p);
-					}
-				}
-			}else{
-				myPlots = new ArrayList<Plot>();
-			}
-
-		}
-		//*/
 
 		//set up LocationManager and Listener for GPS
 		currentGPSTasker = null;
@@ -164,12 +146,7 @@ public class PlotTableActivity extends Activity {
 
 		};
 	}
-
-	@SuppressLint("ShowToast")
-	private void makeToast() {
-		Toast.makeText(getBaseContext(), "You got here", Toast.LENGTH_SHORT);
-	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -186,7 +163,7 @@ public class PlotTableActivity extends Activity {
 			startActivity(d);
 			break;
 		case R.id.action_help:
-			Intent i = new Intent(this, Help.class);
+			Intent i = new Intent(this, Help2.class);
 			startActivity(i);
 			break;
 		default:
@@ -194,7 +171,6 @@ public class PlotTableActivity extends Activity {
 		}
 		return false;
 	}
-
 
 	public void onClick(View v) {
 
@@ -204,13 +180,11 @@ public class PlotTableActivity extends Activity {
 
 			plotDialog(null, null, null).show();
 
-
 			break;
 
 
 		}
 	}
-
 
 	private Dialog plotDialog(String aName, String aLatitude, String aLongitude){
 		builder = new AlertDialog.Builder(this);
@@ -224,7 +198,7 @@ public class PlotTableActivity extends Activity {
 		
 		//varibles
 		isNewPlot = false;
-		if (aName == null && aLatitude == null && aLongitude == null) {
+		if ((aName == null && aLatitude == null && aLongitude == null) || (invaildInfo == 1)) {
 			isNewPlot = true;
 			Button deletePlot = (Button) layout.findViewById(R.id.delete_plot);
 			deletePlot.setVisibility(View.GONE);
@@ -232,7 +206,7 @@ public class PlotTableActivity extends Activity {
 		
 
 		//fill in if editing plot
-		if(!isNewPlot) {
+		if((!isNewPlot) || (invaildInfo == 1)) {
 			input_plot_name.setText(aName);
 			input_plot_lat.setText(aLatitude);
 			input_plot_long.setText(aLongitude);
@@ -259,40 +233,28 @@ public class PlotTableActivity extends Activity {
 				plot_name =  input_plot_name.getText().toString();
 				plot_lat = input_plot_lat.getText().toString();
 				plot_long = input_plot_long.getText().toString();
-				try {
-					double lon = Double.parseDouble(plot_long);
-					double lat = Double.parseDouble(plot_lat);
-					if (lat > 90) {
-						plot_lat = Double.toString(90.0);
-					}
-					else if (lat < -90) {
-						plot_lat = Double.toString(-90.0);
-					}
-					else {
-						plot_lat = Double.toString(lat);
-					}
-					
-					if (lon > 180) {
-						plot_long = Double.toString(180.0);
-					}
-					
-					else if (lon < -180) {
-						plot_long = Double.toString(-180.0);
-					}
-					else {
-						plot_long = Double.toString(lon);
-					}
-					
-				}
-				catch (Exception e){
-					Log.e("GPS", "failed to parse longitude as double");
-					//TODO notify user gps coords are invalid
-					plot_lat = "";
-					plot_long = "";
-				}
+
+				int valid_name = checkPlotname(plot_name);
+				int valid_coor = checkCoor(plot_lat, plot_long);
 				
-				plotToList(plot_name, plot_lat, plot_long);
-				plotsToDisplay();
+				if((valid_name != 0) && ( valid_coor == 0)){
+					Toast.makeText(PlotTableActivity.this, "Invaild or No Plot Name", Toast.LENGTH_SHORT).show();
+					invaildInfo = 1;
+					plotDialog(null, plot_lat, plot_long).show();
+				}else if((valid_name == 0) && ( valid_coor != 0)){
+					Toast.makeText(PlotTableActivity.this, "Need Coordinate", Toast.LENGTH_SHORT).show();
+					invaildInfo = 1;
+					plotDialog(plot_name, null, null).show();
+				}else if((valid_name != 0) && ( valid_coor != 0)){
+					Toast.makeText(PlotTableActivity.this, "Need Coordinate and vaild Plot Name", Toast.LENGTH_SHORT).show();
+					invaildInfo = 1;
+					plotDialog(null, null, null).show();
+				}else{
+					invaildInfo = 0;
+					plotToList(plot_name, plot_lat, plot_long);
+					plotsToDisplay();
+				}
+
 			}
 
 		});
@@ -313,6 +275,82 @@ public class PlotTableActivity extends Activity {
 		ad = builder.create();
 		return ad;
 	}
+	
+	/*
+	 * Check the plot name.
+	 * Plot name must be at least length of 4 char and less then 11 char
+	 * Plot name must also be unique 
+	 * */
+	private int checkPlotname(String plot_name) {
+		
+		List<Plot> all_plots = Plot.listAll(Plot.class);
+		int vaild = 0;
+		
+		if(plot_name.isEmpty()){
+			return -1;
+		}
+		
+		if((plot_name.length() < 4) || (plot_name.length() > 11)){
+			return -1;
+		}
+		
+		for(int i=0; i < all_plots.size(); i++){
+			
+			if(all_plots.get(i).getName().equalsIgnoreCase(plot_name)){
+				vaild = 1;
+			}
+		}
+		
+		if(vaild == 0){
+			return vaild;
+		}else{
+			return 1;
+		}
+		
+	}//endof checkPlotname
+
+	/*
+	 * Check the coordinates
+	 * */
+	private int checkCoor(String plot_lat, String plot_long) {
+		
+		if(plot_lat.isEmpty() || plot_long.isEmpty()){
+			return 1;
+		}else{
+			try {
+				double lon = Double.parseDouble(plot_long);
+				double lat = Double.parseDouble(plot_lat);
+				if (lat > 90) {
+					plot_lat = Double.toString(90.0);
+				}
+				else if (lat < -90) {
+					plot_lat = Double.toString(-90.0);
+				}
+				else {
+					plot_lat = Double.toString(lat);
+				}
+					
+				if (lon > 180) {
+					plot_long = Double.toString(180.0);
+				}
+				else if (lon < -180) {
+					plot_long = Double.toString(-180.0);
+				}
+				else {
+					plot_long = Double.toString(lon);
+				}
+				
+			}
+			catch (Exception e){
+				Log.e("GPS", "failed to parse latitude and longitude as double");
+				
+				plot_lat = "0.0";
+				plot_long = "0.0";
+				return 1;
+			}
+			return 0;
+		}
+	}//endof checkCoor
 
 	private class GPSUpdaterTask extends AsyncTask<Void, Void, Boolean> {
 		private final float MAX_INACCURACY = 250; //in meters
@@ -479,13 +517,16 @@ public class PlotTableActivity extends Activity {
 
 	private void plotToList(String name, String latitude, String longitude) {
 		int index;
+		
 		if (isNewPlot) {
-			myPlots.add(new Plot(getBaseContext(), curr_user,name, latitude, longitude, null));
+			myPlots.add(new Plot(getBaseContext(), curr_user, name, latitude, longitude, null, false));
 			index = myPlots.size()-1;
-			myPlots.get(index);
+			myPlots.get(index).save();
 		}
 		else {//update plot info in arraylist
-			myPlots.set(plotRow, new Plot(getBaseContext(), curr_user,name, latitude, longitude, null));
+			myPlots.get(plotRow).delete();
+			myPlots.set(plotRow, new Plot(getBaseContext(), curr_user,name, latitude, longitude, null, false));
+			myPlots.get(plotRow).save();
 		}
 	}
 
@@ -531,6 +572,8 @@ public class PlotTableActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				
+				
+				myPlots.get(plotRow).delete();
 				myPlots.remove(plotRow);
 				plotsToDisplay();
 				ad.dismiss();
@@ -558,6 +601,7 @@ public class PlotTableActivity extends Activity {
 			super(PlotTableActivity.this, R.layout.plot_table_elements, myPlots);
 			// TODO Auto-generated constructor stub
 		}
+		
 
 		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {
@@ -570,7 +614,7 @@ public class PlotTableActivity extends Activity {
 			}
 
 			//Find plot
-			Plot currentPlot = myPlots.get(position);
+			final Plot currentPlot = myPlots.get(position);
 
 			//fill the view
 			//plot name
@@ -585,21 +629,6 @@ public class PlotTableActivity extends Activity {
 			TextView plot_long = (TextView) plotView.findViewById(R.id.longitude);
 			plot_long.setText(currentPlot.getLongitude());
 
-			//Configuration for the location/gps button on the List view
-			final ImageButton location_button = (ImageButton) plotView.findViewById(R.id.pt_location);
-			location_button.setOnClickListener(new OnClickListener(){
-
-				@Override
-				public void onClick(View v) {
-					switch(v.getId()){
-					case R.id.pt_location:
-						current_position = position;
-						break;
-					}
-
-				}
-
-			});
 
 			//Configuration for the camera button on the List view
 			final ImageButton camera_button = (ImageButton) plotView.findViewById(R.id.pt_camera);
@@ -644,6 +673,17 @@ public class PlotTableActivity extends Activity {
 					switch(v.getId()){
 					case R.id.pt_upload:
 						current_position = position;
+						
+						//If the plot has not been uploaded
+						if(currentPlot.isUpload() == false){
+							currentPlot.setUpload(true);
+							currentPlot.save();
+							Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
+						}
+						//If the plot has been uploaded
+						else{
+							Toast.makeText(getBaseContext(), "Already been uploaded", Toast.LENGTH_SHORT).show();
+						}
 						break;
 					}
 
