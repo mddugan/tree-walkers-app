@@ -40,6 +40,7 @@
     <string name="get_gps_coords">Get GPS Coordinates</string>
     <string name="action_help">Context Help</string>
     <string name="help">Help</string>
+    <string name="delete_row">Delete</string>
 
     <string-array name="abundance_level">
         <item>Rare</item>

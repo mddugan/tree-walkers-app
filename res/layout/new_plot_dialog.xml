@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10" 
-        android:inputType="number"
+        android:inputType="numberDecimal|numberSigned"
         android:hint="Enter Latitude"/>
 
     <EditText
@@ -41,12 +41,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="number"
+        android:inputType="numberDecimal|numberSigned"
         android:hint="Enter Longitude" />
+    <ProgressBar
+         android:id="@+id/gps_progress"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         style="@android:style/Widget.ProgressBar"
+         android:visibility="gone"
+         android:layout_marginRight="5dp" />
+    
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/get_gps_coords"
         android:onClick="getGPS"/>
+    
+    <Button
+        android:id="@+id/delete_plot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_row"
+        android:background="@color/red"
+        android:onClick="verifyDelete"/>
 
 </LinearLayout>

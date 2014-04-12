@@ -18,11 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-<<<<<<< HEAD
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-=======
->>>>>>> 1b593dd3581232374a17789a437c8616503e1e3e
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,6 +35,7 @@ public class PlotInfoActivity extends Activity {
 	private ArrayList<Tree> mySmallTrees = new ArrayList<Tree>();
 	private AlertDialog.Builder builder;
 	private AlertDialog ad;
+	private AlertDialog dd;
 	private String small_tree_name = " ";
 	private String large_tree_name = " ";
 	private String abundance_lvl = " ";
@@ -51,6 +49,7 @@ public class PlotInfoActivity extends Activity {
 	private boolean isNewSmallTree;
 	private boolean isNewLargeTree;
 	private String[] abundanceLevels;
+	private boolean isEditingSmallTree;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -123,18 +122,21 @@ public class PlotInfoActivity extends Activity {
 
 
 	private Dialog smallTreeDialog(String aName, String aAbundance) {
-		isNewSmallTree = false;
-
-		if(aName == null && aAbundance == null) {
-			isNewSmallTree = true;
-		}
-
-
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
 		final View layout = inflater.inflate(R.layout.add_tree_dialog, null);
 
 		final EditText input_tree_name = (EditText)layout.findViewById(R.id.atd_fillname);
+		isNewSmallTree = false;
+		isEditingSmallTree = true;
+		if(aName == null && aAbundance == null) {
+			Button deleteTree = (Button) layout.findViewById(R.id.delete_tree);
+			deleteTree.setVisibility(View.GONE);
+			isNewSmallTree = true;
+		}
+
+
+		
 		if (!isNewSmallTree) {
 			input_tree_name.setText(aName);
 		}
@@ -222,18 +224,20 @@ public class PlotInfoActivity extends Activity {
 	}
 
 	private Dialog largeTreeDialog(String aName, String aAbundance) {
-
-		isNewLargeTree = false;
-
-		if(aName == null && aAbundance == null) {
-			isNewLargeTree = true;
-		}
-
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
 		final View layout = inflater.inflate(R.layout.add_tree_dialog, null);
 
 		final EditText input_tree_name = (EditText)layout.findViewById(R.id.atd_fillname);
+		isNewLargeTree = false;
+		isEditingSmallTree = false;
+		if(aName == null && aAbundance == null) {
+			isNewLargeTree = true;
+			Button deleteTree = (Button) layout.findViewById(R.id.delete_tree);
+			deleteTree.setVisibility(View.GONE);
+		}
+
+		
 		if (!isNewLargeTree) {
 			input_tree_name.setText(aName);
 		}
@@ -325,20 +329,7 @@ public class PlotInfoActivity extends Activity {
 		ListView list = (ListView) findViewById(R.id.pi_small_list);
 		list.setAdapter(displaySmallTreesAdapter);
 		//add on click listener to detect selection
-		list.setOnItemClickListener(new OnItemClickListener() {
-
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				//index in view should be same index in plotList
-				smallTreeRow = position;
-				Tree selectedTree = mySmallTrees.get(smallTreeRow);
-				// open edit plot dialog
-				smallTreeDialog(selectedTree.getName(), selectedTree.getAbundance()).show();
-			}
-
-		});
+		
 		
 		list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
@@ -346,7 +337,10 @@ public class PlotInfoActivity extends Activity {
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				smallTreeRow = position;
-				deleteSmallTreeDialog().show();
+				Tree selectedTree = mySmallTrees.get(smallTreeRow);
+				// open edit plot dialog
+				smallTreeDialog(selectedTree.getName(), selectedTree.getAbundance()).show();
+				//deleteSmallTreeDialog().show();
 				// TODO Auto-generated method stub
 				return false;
 			}
@@ -382,36 +376,48 @@ public class PlotInfoActivity extends Activity {
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				largeTreeRow = position;
-				deleteLargeTreeDialog().show();
-				// TODO Auto-generated method stub
+				//deleteLargeTreeDialog().show();
+				Tree selectedTree = myLargeTrees.get(largeTreeRow);
+				// open edit plot dialog
+				largeTreeDialog(selectedTree.getName(), selectedTree.getAbundance()).show();
 				return false;
 			}
 			
 		});
 	}
 	
+	public void verifyDelete(View v) {
+		if (isEditingSmallTree) {
+			deleteSmallTreeDialog().show();
+		}
+		else {
+			deleteLargeTreeDialog().show();
+		}
+		
+	}
 	
 	private Dialog deleteSmallTreeDialog() {
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
-		final View layout = inflater.inflate(R.layout.delete_plot_dialog, null);
+		final View layout = inflater.inflate(R.layout.delete_row_dialog, null);
 		
-		builder.setTitle("Delete Small Tree");
-		builder.setMessage("Press Delete to Remove Small Tree");
+		builder.setTitle("Remove Small Tree");
+		builder.setMessage("Remove Small Tree?");
 		builder.setView(layout);
-		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				
 				mySmallTrees.remove(smallTreeRow);
 				SmallTreesDisplay();
+				ad.dismiss();
 			}
 
 		});
 
 
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -420,32 +426,33 @@ public class PlotInfoActivity extends Activity {
 				
 			}
 		});
-		ad = builder.create();
-		return ad;
+		dd = builder.create();
+		return dd;
 	}
 	
 	
 	private Dialog deleteLargeTreeDialog() {
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
-		final View layout = inflater.inflate(R.layout.delete_plot_dialog, null);
+		final View layout = inflater.inflate(R.layout.delete_row_dialog, null);
 		
-		builder.setTitle("Delete Large Tree");
-		builder.setMessage("Press Delete to Remove Large Tree");
+		builder.setTitle("Remove Large Tree");
+		builder.setMessage("Delete Large Tree?");
 		builder.setView(layout);
-		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				
 				myLargeTrees.remove(largeTreeRow);
 				LargeTreesDisplay();
+				ad.dismiss();
 			}
 
 		});
 
 
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -454,8 +461,8 @@ public class PlotInfoActivity extends Activity {
 				
 			}
 		});
-		ad = builder.create();
-		return ad;
+		dd = builder.create();
+		return dd;
 	}
 
 	private class SmallTreesDisplayAdapter extends ArrayAdapter<Tree>{

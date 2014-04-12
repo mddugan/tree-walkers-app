@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,8 @@ public class PlotTableActivity extends Activity {
 	private ArrayList<Plot> myPlots = new ArrayList<Plot>();
 	private AlertDialog.Builder builder;
 	private AlertDialog ad;
+	private AlertDialog dd;
+	private AlertDialog gd;
 	private  String plot_name = "plot name" , plot_lat = "latitude", plot_long = "longitude";
 	private final int CAMERA_INTENT_CODE = 7;
 	private int current_position = -1;
@@ -56,7 +59,8 @@ public class PlotTableActivity extends Activity {
 	private LocationManager lManager;
 	private LocationListener gListener;
 	private Location bestLocation;
-	private AsyncTask<Void,Void,Void> currentGPSTasker;
+	private AsyncTask<Void,Void,Boolean> currentGPSTasker;
+	private ProgressBar gpsProgress;
 
 	private Bundle extra;
 	private String curr_user;
@@ -122,18 +126,18 @@ public class PlotTableActivity extends Activity {
 
 			@Override
 			public void onLocationChanged(Location location) {
-				Log.d("GPS", "location has changed");
+				Log.d("GPS Listener", "location has changed");
 				if (bestLocation == null) {
-					Log.d("GPS", "setting location for the first time");
+					Log.d("GPS Listener", "setting location for the first time");
 					bestLocation = location;
 				}
 				else { //compare them
 					//check that it is newer than bestLocation
 					if (location.getTime() - bestLocation.getTime() > 0 ) {
-						Log.d("GPS", "new location is new than previous location");
+						Log.d("GPS Listener", "new location is newer than previous location");
 						//check that it is more accurate
 						if (location.getAccuracy() < bestLocation.getAccuracy()) {
-							Log.d("GPS", "new location is more accurate, setting");
+							Log.d("GPS Listener", "new location is more accurate, setting");
 							bestLocation = location;
 
 						}
@@ -209,12 +213,6 @@ public class PlotTableActivity extends Activity {
 
 
 	private Dialog plotDialog(String aName, String aLatitude, String aLongitude){
-
-		//varibles
-		isNewPlot = false;
-		if (aName == null && aLatitude == null && aLongitude == null) {
-			isNewPlot = true;
-		}
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
 		final View layout = inflater.inflate(R.layout.new_plot_dialog, null);
@@ -222,6 +220,16 @@ public class PlotTableActivity extends Activity {
 		final EditText input_plot_name = (EditText)layout.findViewById(R.id.np_plot_name);
 		input_plot_lat = (EditText)layout.findViewById(R.id.np_plot_lat);
 		input_plot_long = (EditText) layout.findViewById(R.id.np_plot_long);
+		gpsProgress = (ProgressBar) layout.findViewById(R.id.gps_progress);
+		
+		//varibles
+		isNewPlot = false;
+		if (aName == null && aLatitude == null && aLongitude == null) {
+			isNewPlot = true;
+			Button deletePlot = (Button) layout.findViewById(R.id.delete_plot);
+			deletePlot.setVisibility(View.GONE);
+		}
+		
 
 		//fill in if editing plot
 		if(!isNewPlot) {
@@ -247,11 +255,42 @@ public class PlotTableActivity extends Activity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
+				
 				plot_name =  input_plot_name.getText().toString();
 				plot_lat = input_plot_lat.getText().toString();
 				plot_long = input_plot_long.getText().toString();
-
+				try {
+					double lon = Double.parseDouble(plot_long);
+					double lat = Double.parseDouble(plot_lat);
+					if (lat > 90) {
+						plot_lat = Double.toString(90.0);
+					}
+					else if (lat < -90) {
+						plot_lat = Double.toString(-90.0);
+					}
+					else {
+						plot_lat = Double.toString(lat);
+					}
+					
+					if (lon > 180) {
+						plot_long = Double.toString(180.0);
+					}
+					
+					else if (lon < -180) {
+						plot_long = Double.toString(-180.0);
+					}
+					else {
+						plot_long = Double.toString(lon);
+					}
+					
+				}
+				catch (Exception e){
+					Log.e("GPS", "failed to parse longitude as double");
+					//TODO notify user gps coords are invalid
+					plot_lat = "";
+					plot_long = "";
+				}
+				
 				plotToList(plot_name, plot_lat, plot_long);
 				plotsToDisplay();
 			}
@@ -275,9 +314,9 @@ public class PlotTableActivity extends Activity {
 		return ad;
 	}
 
-	private class GPSUpdaterTask extends AsyncTask<Void, Void, Void> {
-		private final float MAX_INACCURACY = 100; //in meters
-		private final long MAX_ELAPSED_TIME = 1000 * 60 * 2;
+	private class GPSUpdaterTask extends AsyncTask<Void, Void, Boolean> {
+		private final float MAX_INACCURACY = 250; //in meters
+		private final long MAX_ELAPSED_TIME = 1000 * 60; //in milliseconds
 		String provider;
 		Location updated;
 		long startTime;
@@ -300,15 +339,22 @@ public class PlotTableActivity extends Activity {
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Boolean doInBackground(Void... params) {
+			Boolean isGPSValid = false;
 			startTime = System.currentTimeMillis();
 			long currentTime = -1;
 			//wait for more recent location update
-			while(updated.getTime() <= bestLocation.getTime()) {
+			if(updated == null) {
+				Log.e("GPS", "updated is null");
+			}
+			if(bestLocation == null) {
+				Log.e("GPS", "bestLocation is null");
+			}
+			while(updated.getTime() <= bestLocation.getTime()) { //TODO <--- check if null
 				currentTime = System.currentTimeMillis();
 				if (currentTime - startTime > MAX_ELAPSED_TIME) {
 					Log.d("GPS", "GPS timeout");
-					return null;
+					return isGPSValid;
 				}
 				updated = lManager.getLastKnownLocation(provider);
 			}
@@ -318,25 +364,32 @@ public class PlotTableActivity extends Activity {
 				currentTime = System.currentTimeMillis();
 				if (currentTime - startTime > MAX_ELAPSED_TIME) {
 					Log.d("GPS", "GPS timeout");
-					return null;
+					return isGPSValid;
 				}
 				updated = lManager.getLastKnownLocation(provider);
 			}
 
 			Log.d("GPS", "location is accurate enough");
-
+			isGPSValid = true;
 			//set new bestLocation
 			bestLocation = updated;
-
+			
 			//stop listening
 			lManager.removeUpdates(gListener);
 
 			Log.d("GPS", "turned off location updates");
 
-			return null;
+			return isGPSValid;
 		}
 
-		protected void onPostExecute(Void v) {
+		protected void onPostExecute(Boolean isGPSValid) {
+			gpsProgress.setVisibility(View.GONE);
+			lManager.removeUpdates(gListener);
+			if (!isGPSValid) {
+				unableToRetrieveGPSDialog().show();
+				return;
+			}
+			
 			if (bestLocation == null) {
 				Log.d("GPS", "bestLocation is null");
 				return;
@@ -353,10 +406,38 @@ public class PlotTableActivity extends Activity {
 				Log.d("GPS", "longitude field is null");
 				return;
 			}
+			
+			//TODO if v is null, failed to get current gps coordinates,
+			//should not auto fill and should notify user that unable to get accurate gps coordinates
 			input_plot_long.setText(Double.toString(bestLocation.getLongitude()));
 
 		}
 
+	}
+	
+	
+	private Dialog unableToRetrieveGPSDialog() {
+		builder = new AlertDialog.Builder(this);
+		LayoutInflater inflater = this.getLayoutInflater();
+		final View layout = inflater.inflate(R.layout.delete_row_dialog, null);
+		
+		builder.setTitle("Failed to get GPS");
+		builder.setMessage("Unable to get GPS Coordinates");
+		builder.setView(layout);
+		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				
+			}
+
+		});
+
+
+		
+		gd = builder.create();
+		return gd;
 	}
 
 	public void getGPS(View v) {
@@ -382,10 +463,12 @@ public class PlotTableActivity extends Activity {
 
 		if (currentGPSTasker == null) {
 			currentGPSTasker = new GPSUpdaterTask().execute(new Void[1]);
+			gpsProgress.setVisibility(View.VISIBLE);
 		}
 		else {
 			if (currentGPSTasker.getStatus() == AsyncTask.Status.FINISHED){
 				currentGPSTasker = new GPSUpdaterTask().execute(new Void[1]);
+				gpsProgress.setVisibility(View.VISIBLE);
 			}
 			else {
 				Log.d("GPS", "GPS Thread already running");
@@ -412,20 +495,7 @@ public class PlotTableActivity extends Activity {
 		ListView list = (ListView) findViewById(R.id.plot_element);
 		list.setAdapter(displayPlotsAdapter);
 		//add on click listener to detect selection
-		list.setOnItemClickListener(new OnItemClickListener() {
-
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				//index in view should be same index in plotList
-				plotRow = position;
-				Plot selectedPlot = myPlots.get(plotRow);
-				// open edit plot dialog
-				plotDialog(selectedPlot.getName(), selectedPlot.getLatitude(), selectedPlot.getLongitude()).show();
-			}
-
-		});
+		
 		
 		list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
@@ -433,7 +503,10 @@ public class PlotTableActivity extends Activity {
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				plotRow = position;
-				deleteDialog().show();
+				Plot selectedPlot = myPlots.get(plotRow);
+				// open edit plot dialog
+				plotDialog(selectedPlot.getName(), selectedPlot.getLatitude(), selectedPlot.getLongitude()).show();
+				//deleteDialog().show();
 				// TODO Auto-generated method stub
 				return false;
 			}
@@ -441,27 +514,32 @@ public class PlotTableActivity extends Activity {
 		});
 	}
 	
+	public void verifyDelete(View v) {
+		deleteDialog().show();
+	}
+	
 	private Dialog deleteDialog() {
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
-		final View layout = inflater.inflate(R.layout.delete_plot_dialog, null);
+		final View layout = inflater.inflate(R.layout.delete_row_dialog, null);
 		
-		builder.setTitle("Delete Plot");
-		builder.setMessage("Press Delete to Remove Plot");
+		builder.setTitle("Remove Plot");
+		builder.setMessage("Delete Plot?");
 		builder.setView(layout);
-		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				
 				myPlots.remove(plotRow);
 				plotsToDisplay();
+				ad.dismiss();
 			}
 
 		});
 
 
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -470,8 +548,8 @@ public class PlotTableActivity extends Activity {
 				
 			}
 		});
-		ad = builder.create();
-		return ad;
+		dd = builder.create();
+		return dd;
 	}
 
 	public class plotDisplayAdapter extends ArrayAdapter<Plot>{

@@ -19,6 +19,7 @@ public final class R {
     }
     public static final class color {
         public static final int class_zero_background=0x7f050000;
+        public static final int red=0x7f050001;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -47,9 +48,9 @@ public final class R {
     }
     public static final class id {
         public static final int Users_spinner=0x7f0b0011;
-        public static final int action_help=0x7f0b0033;
-        public static final int action_resources=0x7f0b0034;
-        public static final int action_settings=0x7f0b0032;
+        public static final int action_help=0x7f0b0036;
+        public static final int action_resources=0x7f0b0037;
+        public static final int action_settings=0x7f0b0035;
         public static final int atd_abund_level=0x7f0b0019;
         public static final int atd_abundance=0x7f0b001a;
         public static final int atd_fillname=0x7f0b0018;
@@ -57,36 +58,39 @@ public final class R {
         public static final int btnBack=0x7f0b000c;
         public static final int button1=0x7f0b0012;
         public static final int container=0x7f0b0000;
+        public static final int delete_plot=0x7f0b0022;
+        public static final int delete_tree=0x7f0b001b;
         public static final int editEmail=0x7f0b0005;
         public static final int editUserID=0x7f0b0003;
+        public static final int gps_progress=0x7f0b0021;
         public static final int imageView1=0x7f0b0014;
         public static final int imageView2=0x7f0b0016;
-        public static final int latitude=0x7f0b0031;
+        public static final int latitude=0x7f0b0034;
         public static final int login_button=0x7f0b0010;
         public static final int login_form=0x7f0b0002;
-        public static final int longitude=0x7f0b0030;
-        public static final int new_plot=0x7f0b0029;
-        public static final int np_plot_lat=0x7f0b001e;
-        public static final int np_plot_long=0x7f0b001f;
-        public static final int np_plot_name=0x7f0b001c;
-        public static final int np_plotcoor=0x7f0b001d;
-        public static final int np_plotname=0x7f0b001b;
-        public static final int pi_abundance=0x7f0b0028;
-        public static final int pi_add_large=0x7f0b0021;
-        public static final int pi_add_small=0x7f0b0025;
-        public static final int pi_camera=0x7f0b0026;
-        public static final int pi_large_label=0x7f0b0023;
-        public static final int pi_large_list=0x7f0b0022;
-        public static final int pi_small_label=0x7f0b0020;
-        public static final int pi_small_list=0x7f0b0024;
-        public static final int pi_tree_name=0x7f0b0027;
-        public static final int plot_element=0x7f0b002a;
-        public static final int plot_name=0x7f0b002b;
+        public static final int longitude=0x7f0b0033;
+        public static final int new_plot=0x7f0b002c;
+        public static final int np_plot_lat=0x7f0b001f;
+        public static final int np_plot_long=0x7f0b0020;
+        public static final int np_plot_name=0x7f0b001d;
+        public static final int np_plotcoor=0x7f0b001e;
+        public static final int np_plotname=0x7f0b001c;
+        public static final int pi_abundance=0x7f0b002b;
+        public static final int pi_add_large=0x7f0b0024;
+        public static final int pi_add_small=0x7f0b0028;
+        public static final int pi_camera=0x7f0b0029;
+        public static final int pi_large_label=0x7f0b0026;
+        public static final int pi_large_list=0x7f0b0025;
+        public static final int pi_small_label=0x7f0b0023;
+        public static final int pi_small_list=0x7f0b0027;
+        public static final int pi_tree_name=0x7f0b002a;
+        public static final int plot_element=0x7f0b002d;
+        public static final int plot_name=0x7f0b002e;
         public static final int plots_table_button=0x7f0b000f;
-        public static final int pt_camera=0x7f0b002e;
-        public static final int pt_info=0x7f0b002d;
-        public static final int pt_location=0x7f0b002f;
-        public static final int pt_upload=0x7f0b002c;
+        public static final int pt_camera=0x7f0b0031;
+        public static final int pt_info=0x7f0b0030;
+        public static final int pt_location=0x7f0b0032;
+        public static final int pt_upload=0x7f0b002f;
         public static final int rg_adv=0x7f0b000b;
         public static final int rg_beg=0x7f0b0009;
         public static final int rg_exp=0x7f0b0008;
@@ -106,7 +110,7 @@ public final class R {
         public static final int activity_main=0x7f030002;
         public static final int activity_resource=0x7f030003;
         public static final int add_tree_dialog=0x7f030004;
-        public static final int delete_plot_dialog=0x7f030005;
+        public static final int delete_row_dialog=0x7f030005;
         public static final int fragment_help=0x7f030006;
         public static final int fragment_resource=0x7f030007;
         public static final int new_plot_dialog=0x7f030008;
@@ -126,21 +130,22 @@ public final class R {
     public static final class string {
         public static final int abd_lvl=0x7f070017;
         public static final int abundance=0x7f070015;
-        public static final int action_forgot_password=0x7f07002c;
+        public static final int action_forgot_password=0x7f07002d;
         public static final int action_help=0x7f070025;
         public static final int action_settings=0x7f070001;
-        public static final int action_sign_in_register=0x7f07002a;
-        public static final int action_sign_in_short=0x7f07002b;
+        public static final int action_sign_in_register=0x7f07002b;
+        public static final int action_sign_in_short=0x7f07002c;
         public static final int adv=0x7f070020;
         public static final int app_name=0x7f070000;
         public static final int beg=0x7f07001e;
         public static final int camera=0x7f070006;
         public static final int coordinates=0x7f070004;
+        public static final int delete_row=0x7f070027;
         public static final int email=0x7f07001c;
-        public static final int error_field_required=0x7f070031;
-        public static final int error_incorrect_password=0x7f070030;
-        public static final int error_invalid_email=0x7f07002e;
-        public static final int error_invalid_password=0x7f07002f;
+        public static final int error_field_required=0x7f070032;
+        public static final int error_incorrect_password=0x7f070031;
+        public static final int error_invalid_email=0x7f07002f;
+        public static final int error_invalid_password=0x7f070030;
         public static final int exp=0x7f07001d;
         public static final int get_gps_coords=0x7f070024;
         public static final int hello_world=0x7f070002;
@@ -152,47 +157,47 @@ public final class R {
         public static final int lat=0x7f070022;
         public static final int location=0x7f070005;
         public static final int login=0x7f070019;
-        public static final int login_progress_signing_in=0x7f07002d;
+        public static final int login_progress_signing_in=0x7f07002e;
         public static final int longi=0x7f070023;
         public static final int new_plot=0x7f070009;
         public static final int plot_info=0x7f070007;
         public static final int plot_name=0x7f070003;
         public static final int plots_table=0x7f07000d;
-        public static final int pref_default_display_name=0x7f070037;
-        public static final int pref_description_social_recommendations=0x7f070035;
+        public static final int pref_default_display_name=0x7f070038;
+        public static final int pref_description_social_recommendations=0x7f070036;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f070039;
+        public static final int pref_header_data_sync=0x7f07003a;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f070033;
+        public static final int pref_header_general=0x7f070034;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f07003c;
-        public static final int pref_ringtone_silent=0x7f07003f;
-        public static final int pref_title_add_friends_to_messages=0x7f070038;
-        public static final int pref_title_display_name=0x7f070036;
-        public static final int pref_title_new_message_notifications=0x7f07003d;
-        public static final int pref_title_ringtone=0x7f07003e;
-        public static final int pref_title_social_recommendations=0x7f070034;
-        public static final int pref_title_sync_frequency=0x7f07003a;
-        public static final int pref_title_system_sync_settings=0x7f07003b;
-        public static final int pref_title_vibrate=0x7f070040;
+        public static final int pref_header_notifications=0x7f07003d;
+        public static final int pref_ringtone_silent=0x7f070040;
+        public static final int pref_title_add_friends_to_messages=0x7f070039;
+        public static final int pref_title_display_name=0x7f070037;
+        public static final int pref_title_new_message_notifications=0x7f07003e;
+        public static final int pref_title_ringtone=0x7f07003f;
+        public static final int pref_title_social_recommendations=0x7f070035;
+        public static final int pref_title_sync_frequency=0x7f07003b;
+        public static final int pref_title_system_sync_settings=0x7f07003c;
+        public static final int pref_title_vibrate=0x7f070041;
         /**  Strings related to login 
          */
-        public static final int prompt_email=0x7f070028;
-        public static final int prompt_password=0x7f070029;
+        public static final int prompt_email=0x7f070029;
+        public static final int prompt_password=0x7f07002a;
         public static final int returner=0x7f070021;
         public static final int small=0x7f070013;
         public static final int small_add=0x7f070010;
         public static final int title_activity_help=0x7f07000c;
-        public static final int title_activity_login=0x7f070027;
+        public static final int title_activity_login=0x7f070028;
         public static final int title_activity_plot_info=0x7f07000f;
         public static final int title_activity_plottable=0x7f07000e;
         public static final int title_activity_resource=0x7f07000b;
         public static final int title_activity_resources=0x7f07000a;
-        public static final int title_activity_settings=0x7f070032;
+        public static final int title_activity_settings=0x7f070033;
         public static final int tree=0x7f070016;
         public static final int treePlotApp=0x7f07001a;
         public static final int tree_name=0x7f070014;

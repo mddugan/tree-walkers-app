@@ -32,5 +32,13 @@
         android:id="@+id/atd_abundance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    
+    <Button
+        android:id="@+id/delete_tree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_row"
+        android:background="@color/red"
+        android:onClick="verifyDelete"/>
 
 </LinearLayout>
