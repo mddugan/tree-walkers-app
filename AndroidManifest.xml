@@ -48,6 +48,26 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
         <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.Help1"
+            android:label="@string/title_activity_help"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.Help2"
+            android:label="@string/title_activity_help"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.Help3"
+            android:label="@string/title_activity_help"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="edu.mtu.citizenscience.TreePlotter.Help4"
+            android:label="@string/title_activity_help"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <activity
             android:name="edu.mtu.citizenscience.TreePlotter.PlotTableActivity"
             android:label="@string/title_activity_plottable" >
         </activity>

@@ -99,7 +99,7 @@ public class LoginActivity extends Activity {
 			startActivity(d);
 			break;
 		case R.id.action_help:
-			Intent i = new Intent(this, Help.class);
+			Intent i = new Intent(this, Help1.class);
 			startActivity(i);
 			break;
 		default:

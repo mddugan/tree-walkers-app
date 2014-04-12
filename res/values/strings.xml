@@ -26,7 +26,7 @@
     <string name="tree">Tree Name :</string>
     <string name="abd_lvl">Abundance Level :</string>
     <string name="intro">Please enter your logging information if you have not used this app before by clicking the Login, otherwise continue to the Plot Table</string>
-    <string name="login">Login</string>
+    <string name="login">New User</string>
     <string name="treePlotApp">Tree Plotter App</string>
     <string name="userid">User ID:</string>
     <string name="email">Email:</string>
@@ -39,7 +39,22 @@
     <string name="longi">longitude</string>
     <string name="get_gps_coords">Get GPS Coordinates</string>
     <string name="action_help">Context Help</string>
-    <string name="help">Help</string>
+    <string name="help">To make a new user, click \n\t "New User" \nif you already have a Username, choose it then select \n\t "Plot Table"</string>
+    <string name="help1_1">Enter a user ID to represent yourself</string>
+    <string name="help1_2">Enter your email address</string>
+    <string name="help1_3">Enter your experience level:</string>
+    <string name="help1_4"> \t &#8226; Beginner: new to identifying tree species</string>
+    <string name="help1_5"> \t &#8226; Intermediate: has some experience identifying tree species</string>
+    <string name="help1_6"> \t &#8226; Expert: skilled in identifying tree species</string>
+    <string name="help1_7">Tap the "Save and Return" button to return to the main screen</string>
+    <string name="help2_1">Press "+ New Plot" button to create a new plot</string>
+    <string name="help2_2">Then enter a plot name and generate the GPS coordinates or enter them manually</string>
+    <string name="help2_3">Once the new plot is generated you can take a picture of the plot using the camera button, edit the
+        tree information by clicking on the leaf icon, and upload it by pressing the paper airplane button.</string>
+    <string name="help3_1">Press "+ Small Tree" button to create a listing of a tree species, a pop up screen will appear to:
+        \n\n\t Enter the name of the tree species (consult the resources for help identifying tree species) then enter the abundance of that tree species
+        \n\n\t The camera button can take pictures if you are unsure of the tree (this is not required)
+        \n\n The same can be done for "+ Large Tree"</string>
 
     <string-array name="abundance_level">
         <item>Rare</item>
