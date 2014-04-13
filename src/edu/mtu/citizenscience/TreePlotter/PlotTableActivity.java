@@ -198,7 +198,7 @@ public class PlotTableActivity extends Activity {
 		
 		//varibles
 		isNewPlot = false;
-		if ((aName == null && aLatitude == null && aLongitude == null) || (invaildInfo == 1)) {
+		if ((aName == null && aLatitude == null && aLongitude == null)) {
 			isNewPlot = true;
 			Button deletePlot = (Button) layout.findViewById(R.id.delete_plot);
 			deletePlot.setVisibility(View.GONE);
@@ -240,14 +240,17 @@ public class PlotTableActivity extends Activity {
 				if((valid_name != 0) && ( valid_coor == 0)){
 					Toast.makeText(PlotTableActivity.this, "Invaild or No Plot Name", Toast.LENGTH_SHORT).show();
 					invaildInfo = 1;
+					ad.dismiss();
 					plotDialog(null, plot_lat, plot_long).show();
 				}else if((valid_name == 0) && ( valid_coor != 0)){
 					Toast.makeText(PlotTableActivity.this, "Need Coordinate", Toast.LENGTH_SHORT).show();
 					invaildInfo = 1;
+					ad.dismiss();
 					plotDialog(plot_name, null, null).show();
 				}else if((valid_name != 0) && ( valid_coor != 0)){
 					Toast.makeText(PlotTableActivity.this, "Need Coordinate and vaild Plot Name", Toast.LENGTH_SHORT).show();
 					invaildInfo = 1;
+					ad.dismiss();
 					plotDialog(null, null, null).show();
 				}else{
 					invaildInfo = 0;
@@ -524,10 +527,22 @@ public class PlotTableActivity extends Activity {
 			myPlots.get(index).save();
 		}
 		else {//update plot info in arraylist
+			editPlotInfo(myPlots.get(plotRow).getName(), name);
 			myPlots.get(plotRow).delete();
 			myPlots.set(plotRow, new Plot(getBaseContext(), curr_user,name, latitude, longitude, null, false));
 			myPlots.get(plotRow).save();
 		}
+	}
+
+	private void editPlotInfo(String curr_name, String new_name) {
+		
+		List<Tree> all_tree_under_plot = Tree.find(Tree.class, "plot = ?", curr_name);
+		
+		for(int i=0; i< all_tree_under_plot.size(); i++){
+			all_tree_under_plot.get(i).setPlot_name(new_name);
+			all_tree_under_plot.get(i).save();
+		}
+	
 	}
 
 	private void plotsToDisplay(){

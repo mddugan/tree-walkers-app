@@ -209,6 +209,7 @@ public class PlotInfoActivity extends Activity {
 
 				if(valid != 0){
 					invaildSmall = 1;
+					ad.dismiss();
 					smallTreeDialog(small_tree_name, abundance_lvl).show();
 				}
 				else{
@@ -338,6 +339,7 @@ public class PlotInfoActivity extends Activity {
 
 				if(valid != 0){
 					invalidLarge = 1;
+					ad.dismiss();
 					largeTreeDialog(large_tree_name, abundance_lvl).show();
 					
 				}else{
