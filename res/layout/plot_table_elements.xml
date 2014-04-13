@@ -47,8 +47,9 @@
         android:id="@+id/longitude"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
-        android:layout_alignRight="@+id/plot_name"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/latitude"
+        android:layout_toLeftOf="@+id/pt_camera"
         android:text="@string/longi"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -56,6 +57,7 @@
         android:id="@+id/latitude"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
+        android:layout_alignParentLeft="true"
         android:layout_alignRight="@+id/longitude"
         android:layout_below="@+id/plot_name"
         android:text="@string/lat"
