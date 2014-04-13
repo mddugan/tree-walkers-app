@@ -62,4 +62,21 @@ public class Plot extends SugarRecord<Plot>{
 		this.upload = upload;
 	}
 
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+	
+
 }

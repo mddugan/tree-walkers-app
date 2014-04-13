@@ -29,8 +29,8 @@ public class LoginActivity extends Activity {
 
 				final String input_username;
 				final String input_emailaddr;
-				int vaildUser = -1;
-				int vaildEmail = -1;
+				int validUser = -1;
+				int validEmail = -1;
 				input_user = (EditText) findViewById(R.id.editUserID);
 				input_email = (EditText) findViewById(R.id.editEmail);
 
@@ -41,39 +41,50 @@ public class LoginActivity extends Activity {
 
 				if(all_users.size() == 0){
 
-					User user = new User(getBaseContext(), input_username, input_emailaddr, "skill");
-					user.save();
-					
-					Intent i= new Intent(LoginActivity.this, MainActivity.class);
-					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					LoginActivity.this.startActivity(i);
+					validUser = checkUsername(input_username, null);
+					validEmail = checkEmailAddr(input_emailaddr);
+
+					if((validUser != 0) && (validEmail == 0)){
+						Toast.makeText(LoginActivity.this, "Emtpy Username", Toast.LENGTH_SHORT).show();
+					}else if((validEmail != 0) && (validUser == 0)){
+						Toast.makeText(LoginActivity.this, "Invalid Email Address", Toast.LENGTH_SHORT).show();
+					}else if((validUser != 0) && (validEmail != 0)){
+						Toast.makeText(LoginActivity.this, "Invalid Username & Email", Toast.LENGTH_SHORT).show();
+					}else{	
+
+						User user = new User(getBaseContext(), input_username, input_emailaddr, "skill");
+						user.save();
+					}
 
 				}else{
 
 
 					for(int i=0; i<all_users.size(); i++){
 
-						vaildUser = checkUsername(input_username, all_users.get(i).getUsername());
-						vaildEmail = checkEmailAddr(input_emailaddr, all_users.get(i).getEmail());
-						
-						if((vaildUser != 0) && (vaildEmail == 0)){
-							Toast.makeText(LoginActivity.this, "Invaild Username", Toast.LENGTH_SHORT).show();
-						}else if((vaildEmail != 0) && (vaildUser == 0)){
-							Toast.makeText(LoginActivity.this, "Invaild Email", Toast.LENGTH_SHORT).show();
-						}else if((vaildUser != 0) && (vaildEmail != 0)){
-							Toast.makeText(LoginActivity.this, "Invaild Username & Email", Toast.LENGTH_SHORT).show();
+						validUser = checkUsername(input_username, all_users.get(i).getUsername());
+						validEmail = checkEmailAddr(input_emailaddr);
+
+						if((validUser != 0) && (validEmail == 0)){
+							Toast.makeText(LoginActivity.this, "Invalid Username", Toast.LENGTH_SHORT).show();
+						}else if((validEmail != 0) && (validUser == 0)){
+							Toast.makeText(LoginActivity.this, "Invalid Email", Toast.LENGTH_SHORT).show();
+						}else if((validUser != 0) && (validEmail != 0)){
+							Toast.makeText(LoginActivity.this, "Invalid Username & Email", Toast.LENGTH_SHORT).show();
 						}else{
 							continue;
 						}
-						
+
 					}
 				}
 
-				if((vaildUser == 0) && (vaildEmail == 0)){
-
-					User user = new User(getBaseContext(), input_username,input_emailaddr, "skill");
-					user.save();
+				if((validUser == 0) && (validEmail == 0)){
 					
+					if(all_users.size() != 0){
+						User user = new User(getBaseContext(), input_username,input_emailaddr, "skill");
+						user.save();
+					}
+
+
 					Intent i= new Intent(LoginActivity.this, MainActivity.class);
 					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					LoginActivity.this.startActivity(i);
@@ -99,7 +110,7 @@ public class LoginActivity extends Activity {
 			startActivity(d);
 			break;
 		case R.id.action_help:
-			Intent i = new Intent(this, Help1.class);
+			Intent i = new Intent(this, Help.class);
 			startActivity(i);
 			break;
 		default:
@@ -110,23 +121,32 @@ public class LoginActivity extends Activity {
 
 	private int checkUsername(String input, String username) {
 
-		if(input.isEmpty()){
-			return -1;
-		}else if(username.equalsIgnoreCase(input)){
-			return 1;
+		if(username == null){
+			if(input.isEmpty()){
+				return -1;
+			}else{
+				return 0;
+			}
 		}else{
-			return 0;
 
+			if(input.isEmpty()){
+				return -1;
+			}else if(username.equalsIgnoreCase(input)){
+				return 1;
+			}else{
+				return 0;
+
+			}
 		}
 
 	}//endof checkUsername
 
 
-	private int checkEmailAddr(String input_emailaddr, String email) {
+	private int checkEmailAddr(String input_emailaddr) {
 
 		if(input_emailaddr.isEmpty()){
 			return -1;
-		}else if(email.equalsIgnoreCase(input_emailaddr)){
+		}else if(input_emailaddr.contains("@") == false){
 			return 1;
 		}else{
 			return 0;
