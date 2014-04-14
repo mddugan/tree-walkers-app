@@ -49,15 +49,13 @@
     <string name="help1_6"> \t &#8226; Expert: skilled in identifying tree species</string>
     <string name="help1_7">Tap the "Save and Return" button to return to the main screen</string>
     <string name="help2_1">Press "+ New Plot" button to create a new plot</string>
-    <string name="help2_2">Then enter a plot name and generate the GPS coordinates or enter them manually</string>
+    <string name="help2_2">Then enter a plot name and generate the GPS coordinates or enter them manually. Valid Plot Name must be of min length of 4 characters and max length of 10 characters</string>
     <string name="help2_3">Once the new plot is generated you can take a picture of the plot using the camera button, edit the tree information by clicking on the leaf icon, and upload it by pressing the paper airplane button.</string>
     <string name="help3_1">Press "+ Small Tree" button to create a listing of a tree species, a pop up screen will appear to:
         \n\n\t Enter the name of the tree species (consult the resources for help identifying tree species) then enter the abundance of that tree species
         \n\n\t The camera button can take pictures if you are unsure of the tree (this is not required)
         \n\n The same can be done for "+ Large Tree"</string>
         
-    <string name="help2_4">Valid Plot Name must be of min length of 4 characters max length of 10 characters</string>
-
     <string-array name="abundance_level">
         <item>Rare</item>
         <item>Uncommon</item>
