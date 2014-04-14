@@ -82,13 +82,13 @@ public class PlotTableActivity extends Activity {
 		if(extra.getString("user") != null){
 			curr_user = extra.getString("user");
 			curr_email = extra.getString("email");
-	
+
 			//get all the plots the current user has
 			myPlots = Plot.find(Plot.class, "user = ?", curr_user);
-			
+
 			//Display the plots a current user has
 			plotsToDisplay();
-			
+
 		}
 
 
@@ -146,7 +146,7 @@ public class PlotTableActivity extends Activity {
 
 		};
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -195,7 +195,7 @@ public class PlotTableActivity extends Activity {
 		input_plot_lat = (EditText)layout.findViewById(R.id.np_plot_lat);
 		input_plot_long = (EditText) layout.findViewById(R.id.np_plot_long);
 		gpsProgress = (ProgressBar) layout.findViewById(R.id.gps_progress);
-		
+
 		//varibles
 		isNewPlot = false;
 		if ((aName == null && aLatitude == null && aLongitude == null)) {
@@ -203,7 +203,7 @@ public class PlotTableActivity extends Activity {
 			Button deletePlot = (Button) layout.findViewById(R.id.delete_plot);
 			deletePlot.setVisibility(View.GONE);
 		}
-		
+
 
 		//fill in if editing plot
 		if((!isNewPlot) || (invaildInfo == 1)) {
@@ -229,14 +229,14 @@ public class PlotTableActivity extends Activity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
+
 				plot_name =  input_plot_name.getText().toString();
 				plot_lat = input_plot_lat.getText().toString();
 				plot_long = input_plot_long.getText().toString();
 
 				int valid_name = checkPlotname(plot_name);
 				int valid_coor = checkCoor(plot_lat, plot_long);
-				
+
 				if((valid_name != 0) && ( valid_coor == 0)){
 					Toast.makeText(PlotTableActivity.this, "Invaild or No Plot Name", Toast.LENGTH_SHORT).show();
 					invaildInfo = 1;
@@ -278,45 +278,47 @@ public class PlotTableActivity extends Activity {
 		ad = builder.create();
 		return ad;
 	}
-	
+
 	/*
 	 * Check the plot name.
 	 * Plot name must be at least length of 4 char and less then 11 char
 	 * Plot name must also be unique 
 	 * */
 	private int checkPlotname(String plot_name) {
-		
+
 		List<Plot> all_plots = Plot.listAll(Plot.class);
 		int vaild = 0;
-		
+
 		if(plot_name.isEmpty()){
 			return -1;
 		}
-		
+
 		if((plot_name.length() < 4) || (plot_name.length() > 11)){
 			return -1;
 		}
-		
-		for(int i=0; i < all_plots.size(); i++){
-			
-			if(all_plots.get(i).getName().equalsIgnoreCase(plot_name)){
-				vaild = 1;
+
+		if(isNewPlot){
+			for(int i=0; i < all_plots.size(); i++){
+
+				if(all_plots.get(i).getName().equalsIgnoreCase(plot_name)){
+					vaild = 1;
+				}
 			}
 		}
-		
+
 		if(vaild == 0){
 			return vaild;
 		}else{
 			return 1;
 		}
-		
+
 	}//endof checkPlotname
 
 	/*
 	 * Check the coordinates
 	 * */
 	private int checkCoor(String plot_lat, String plot_long) {
-		
+
 		if(plot_lat.isEmpty() || plot_long.isEmpty()){
 			return 1;
 		}else{
@@ -332,7 +334,7 @@ public class PlotTableActivity extends Activity {
 				else {
 					plot_lat = Double.toString(lat);
 				}
-					
+
 				if (lon > 180) {
 					plot_long = Double.toString(180.0);
 				}
@@ -342,11 +344,11 @@ public class PlotTableActivity extends Activity {
 				else {
 					plot_long = Double.toString(lon);
 				}
-				
+
 			}
 			catch (Exception e){
 				Log.e("GPS", "failed to parse latitude and longitude as double");
-				
+
 				plot_lat = "0.0";
 				plot_long = "0.0";
 				return 1;
@@ -414,7 +416,7 @@ public class PlotTableActivity extends Activity {
 			isGPSValid = true;
 			//set new bestLocation
 			bestLocation = updated;
-			
+
 			//stop listening
 			lManager.removeUpdates(gListener);
 
@@ -430,7 +432,7 @@ public class PlotTableActivity extends Activity {
 				unableToRetrieveGPSDialog().show();
 				return;
 			}
-			
+
 			if (bestLocation == null) {
 				Log.d("GPS", "bestLocation is null");
 				return;
@@ -447,7 +449,7 @@ public class PlotTableActivity extends Activity {
 				Log.d("GPS", "longitude field is null");
 				return;
 			}
-			
+
 			//TODO if v is null, failed to get current gps coordinates,
 			//should not auto fill and should notify user that unable to get accurate gps coordinates
 			input_plot_long.setText(Double.toString(bestLocation.getLongitude()));
@@ -455,13 +457,13 @@ public class PlotTableActivity extends Activity {
 		}
 
 	}
-	
-	
+
+
 	private Dialog unableToRetrieveGPSDialog() {
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
 		final View layout = inflater.inflate(R.layout.delete_row_dialog, null);
-		
+
 		builder.setTitle("Failed to get GPS");
 		builder.setMessage("Unable to get GPS Coordinates");
 		builder.setView(layout);
@@ -469,14 +471,14 @@ public class PlotTableActivity extends Activity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
-				
+
+
 			}
 
 		});
 
 
-		
+
 		gd = builder.create();
 		return gd;
 	}
@@ -520,14 +522,15 @@ public class PlotTableActivity extends Activity {
 
 	private void plotToList(String name, String latitude, String longitude) {
 		int index;
-		
+
 		if (isNewPlot) {
 			myPlots.add(new Plot(getBaseContext(), curr_user, name, latitude, longitude, null, false));
 			index = myPlots.size()-1;
 			myPlots.get(index).save();
 		}
 		else {//update plot info in arraylist
-			editPlotInfo(myPlots.get(plotRow).getName(), name);
+			String old_name = myPlots.get(plotRow).getName();
+			editPlotInfo(old_name, name);
 			myPlots.get(plotRow).delete();
 			myPlots.set(plotRow, new Plot(getBaseContext(), curr_user,name, latitude, longitude, null, false));
 			myPlots.get(plotRow).save();
@@ -535,14 +538,14 @@ public class PlotTableActivity extends Activity {
 	}
 
 	private void editPlotInfo(String curr_name, String new_name) {
-		
+
 		List<Tree> all_tree_under_plot = Tree.find(Tree.class, "plot = ?", curr_name);
-		
+
 		for(int i=0; i< all_tree_under_plot.size(); i++){
 			all_tree_under_plot.get(i).setPlot_name(new_name);
 			all_tree_under_plot.get(i).save();
 		}
-	
+
 	}
 
 	private void plotsToDisplay(){
@@ -551,8 +554,8 @@ public class PlotTableActivity extends Activity {
 		ListView list = (ListView) findViewById(R.id.plot_element);
 		list.setAdapter(displayPlotsAdapter);
 		//add on click listener to detect selection
-		
-		
+
+
 		list.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
@@ -566,19 +569,19 @@ public class PlotTableActivity extends Activity {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 		});
 	}
-	
+
 	public void verifyDelete(View v) {
 		deleteDialog().show();
 	}
-	
+
 	private Dialog deleteDialog() {
 		builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = this.getLayoutInflater();
 		final View layout = inflater.inflate(R.layout.delete_row_dialog, null);
-		
+
 		builder.setTitle("Remove Plot");
 		builder.setMessage("Delete Plot?");
 		builder.setView(layout);
@@ -586,8 +589,8 @@ public class PlotTableActivity extends Activity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
-				
+
+
 				myPlots.get(plotRow).delete();
 				myPlots.remove(plotRow);
 				plotsToDisplay();
@@ -603,7 +606,7 @@ public class PlotTableActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
 
-				
+
 			}
 		});
 		dd = builder.create();
@@ -616,7 +619,7 @@ public class PlotTableActivity extends Activity {
 			super(PlotTableActivity.this, R.layout.plot_table_elements, myPlots);
 			// TODO Auto-generated constructor stub
 		}
-		
+
 
 		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {
@@ -688,7 +691,7 @@ public class PlotTableActivity extends Activity {
 					switch(v.getId()){
 					case R.id.pt_upload:
 						current_position = position;
-						
+
 						//If the plot has not been uploaded
 						if(currentPlot.isUpload() == false){
 							currentPlot.setUpload(true);
