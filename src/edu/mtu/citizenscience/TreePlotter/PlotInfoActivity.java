@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -560,7 +561,13 @@ public class PlotInfoActivity extends Activity {
 					switch(v.getId()){
 					case R.id.pi_camera:
 						small_curr_position = position;
-						startCamera();
+						
+						Bitmap img = mySmallTrees.get(small_curr_position).getImg();
+						if (img == null){
+							startCamera();
+						} else {
+							displayImg(img);
+						}
 						break;
 					}
 				}
@@ -614,7 +621,13 @@ public class PlotInfoActivity extends Activity {
 					switch(v.getId()){
 					case R.id.pi_camera:
 						large_curr_position = position;
-						startCamera();
+						
+						Bitmap img = myLargeTrees.get(large_curr_position).getImg();
+						if (img == null){
+							startCamera();
+						} else {
+							displayImg(img);
+						}
 						break;
 					}
 				}
@@ -633,6 +646,36 @@ public class PlotInfoActivity extends Activity {
 		startActivityForResult(cameraIntent, CAMERA_INTENT_CODE);
 	}//endof startCamera
 
+	public void displayImg(Bitmap img){
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+		ImageView image = new ImageView(this);
+		image.setImageBitmap(img);
+		alertDialog.setView(image);
+		alertDialog.setPositiveButton("Done",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int id) {
+				dialog.cancel();
+			}
+		  });
+		alertDialog.setNegativeButton("Delete",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int id) {
+				
+				if(small_curr_position > 0){
+					mySmallTrees.get(small_curr_position).setImg(null);
+					mySmallTrees.get(small_curr_position).save();
+					small_curr_position = -1;
+				}
+				if(large_curr_position > 0){
+					myLargeTrees.get(large_curr_position).setImg(null);
+					myLargeTrees.get(large_curr_position).save();
+					large_curr_position = -1;
+				}
+				
+				dialog.cancel();
+			}
+		  });
+		alertDialog.create().show();
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -642,12 +685,12 @@ public class PlotInfoActivity extends Activity {
 				// Image captured
 				Bitmap img = (Bitmap) data.getExtras().get("data");
 
-				if(small_curr_position > 0){
+				if(small_curr_position >= 0){
 					mySmallTrees.get(small_curr_position).setImg(img);
 					mySmallTrees.get(small_curr_position).save();
 					small_curr_position = -1;
 				}
-				if(large_curr_position > 0){
+				if(large_curr_position >= 0){
 					myLargeTrees.get(large_curr_position).setImg(img);
 					myLargeTrees.get(large_curr_position).save();
 					large_curr_position = -1;

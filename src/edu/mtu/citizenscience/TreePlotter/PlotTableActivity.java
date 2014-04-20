@@ -34,6 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -657,7 +658,14 @@ public class PlotTableActivity extends Activity {
 					switch(v.getId()){
 					case R.id.pt_camera:
 						current_position = position;
-						startCamera();
+						
+						Bitmap img = myPlots.get(current_position).getImg();
+						if (img == null){
+							startCamera();
+						} else {
+							displayImg(img);
+						}
+						
 						break;
 					}
 				}
@@ -718,6 +726,26 @@ public class PlotTableActivity extends Activity {
 		Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		startActivityForResult(cameraIntent, CAMERA_INTENT_CODE);
 	}//endof startCamera
+	
+	public void displayImg(Bitmap img){
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+		ImageView image = new ImageView(this);
+		image.setImageBitmap(img);
+		alertDialog.setView(image);
+		alertDialog.setPositiveButton("Done",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int id) {
+				dialog.cancel();
+			}
+		  });
+		alertDialog.setNegativeButton("Delete",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,int id) {
+				myPlots.get(current_position).setImg(null);
+				myPlots.get(current_position).save();
+				dialog.cancel();
+			}
+		  });
+		alertDialog.create().show();
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
